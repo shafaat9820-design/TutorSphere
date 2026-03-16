@@ -70,7 +70,7 @@ export default function Home() {
               />
               
               {/* Floating Cards */}
-              <Card className="absolute top-10 -left-10 p-4 shadow-xl glass-panel animate-bounce" style={{ animationDuration: '3s' }}>
+              <Card className="absolute top-10 -left-10 p-4 shadow-xl glass-panel animate-bounce z-20" style={{ animationDuration: '3s' }}>
                 <div className="flex items-center gap-3">
                   <div className="bg-emerald-100 p-2 rounded-full"><Star className="w-5 h-5 text-emerald-600 fill-emerald-600"/></div>
                   <div>
