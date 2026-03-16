@@ -29,7 +29,7 @@ export default function Login() {
   const { mutate, isPending } = useLogin({
     mutation: {
       onSuccess: (data) => {
-        login(data.token);
+        login(data.token, data.user);
         toast({ title: "Welcome back!", description: "Successfully logged in." });
         if (data.user.role === "admin") setLocation("/admin/dashboard");
         else if (data.user.role === "tutor") setLocation("/tutor/dashboard");

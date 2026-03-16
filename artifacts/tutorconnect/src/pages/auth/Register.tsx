@@ -37,7 +37,7 @@ export default function Register() {
   const { mutate, isPending } = useRegister({
     mutation: {
       onSuccess: (data) => {
-        login(data.token);
+        login(data.token, data.user);
         toast({ title: "Account created!", description: "Welcome to TutorConnect." });
         if (data.user.role === "tutor") setLocation("/tutor/dashboard");
         else setLocation("/parent/dashboard");
