@@ -1,22 +1,32 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: TutorConnect API specification
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: posts
+    description: Tuition post operations
+  - name: applications
+    description: Application operations
+  - name: payments
+    description: Payment operations
+  - name: admin
+    description: Admin operations
+  - name: reports
+    description: Report operations
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,7 +34,702 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Email already in use
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user profile
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /posts:
+    get:
+      operationId: listPosts
+      tags: [posts]
+      summary: List tuition posts with filters
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: class
+          in: query
+          schema:
+            type: string
+        - name: subject
+          in: query
+          schema:
+            type: string
+        - name: location
+          in: query
+          schema:
+            type: string
+        - name: mode
+          in: query
+          schema:
+            type: string
+            enum: [home, online]
+        - name: medium
+          in: query
+          schema:
+            type: string
+            enum: [english, hindi]
+        - name: minFee
+          in: query
+          schema:
+            type: integer
+        - name: maxFee
+          in: query
+          schema:
+            type: integer
+        - name: genderPreference
+          in: query
+          schema:
+            type: string
+            enum: [male, female, any]
+      responses:
+        "200":
+          description: List of posts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostListResponse"
+
+    post:
+      operationId: createPost
+      tags: [posts]
+      summary: Create a new tuition post (parent only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePostRequest"
+      responses:
+        "201":
+          description: Post created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TuitionPost"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /posts/{id}:
+    get:
+      operationId: getPost
+      tags: [posts]
+      summary: Get a tuition post by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Post details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TuitionPost"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    put:
+      operationId: updatePost
+      tags: [posts]
+      summary: Update a tuition post (owner or admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePostRequest"
+      responses:
+        "200":
+          description: Updated post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TuitionPost"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      operationId: deletePost
+      tags: [posts]
+      summary: Delete a tuition post (owner or admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /posts/my:
+    get:
+      operationId: getMyPosts
+      tags: [posts]
+      summary: Get current user's posts
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: My posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TuitionPost"
+
+  /posts/{id}/contact:
+    get:
+      operationId: getPostContact
+      tags: [posts]
+      summary: Get contact details (requires payment)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Contact details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactResponse"
+        "402":
+          description: Payment required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /applications:
+    post:
+      operationId: applyToPost
+      tags: [applications]
+      summary: Apply to a tuition post (tutor only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplyRequest"
+      responses:
+        "201":
+          description: Applied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Application"
+        "409":
+          description: Already applied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /applications/my:
+    get:
+      operationId: getMyApplications
+      tags: [applications]
+      summary: Get tutor's applications
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: My applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Application"
+
+  /applications/post/{postId}:
+    get:
+      operationId: getPostApplications
+      tags: [applications]
+      summary: Get applicants for a post (parent or admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Applications for post
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Application"
+
+  /payments/create-order:
+    post:
+      operationId: createPaymentOrder
+      tags: [payments]
+      summary: Create Razorpay order for unlocking contact
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderRequest"
+      responses:
+        "200":
+          description: Razorpay order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentOrderResponse"
+
+  /payments/verify:
+    post:
+      operationId: verifyPayment
+      tags: [payments]
+      summary: Verify payment and unlock contact
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyPaymentRequest"
+      responses:
+        "200":
+          description: Payment verified
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VerifyPaymentResponse"
+        "400":
+          description: Payment verification failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /payments/my:
+    get:
+      operationId: getMyPayments
+      tags: [payments]
+      summary: Get tutor's payment history
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: My payments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Payment"
+
+  /reports:
+    post:
+      operationId: createReport
+      tags: [reports]
+      summary: Report a post or user
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateReportRequest"
+      responses:
+        "201":
+          description: Report submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /admin/dashboard:
+    get:
+      operationId: adminGetDashboard
+      tags: [admin]
+      summary: Get admin dashboard stats
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Dashboard stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/users:
+    get:
+      operationId: adminGetUsers
+      tags: [admin]
+      summary: Get all users
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: role
+          in: query
+          schema:
+            type: string
+            enum: [admin, tutor, parent]
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminUserListResponse"
+
+  /admin/users/{id}:
+    delete:
+      operationId: adminDeleteUser
+      tags: [admin]
+      summary: Delete a user
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /admin/posts:
+    get:
+      operationId: adminGetPosts
+      tags: [admin]
+      summary: Get all tuition posts
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Post list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostListResponse"
+
+  /admin/posts/{id}/featured:
+    patch:
+      operationId: adminToggleFeatured
+      tags: [admin]
+      summary: Toggle featured status of a post
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ToggleFeaturedRequest"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /admin/payments:
+    get:
+      operationId: adminGetPayments
+      tags: [admin]
+      summary: Get all payments
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Payment list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminPaymentListResponse"
+
+  /admin/reports:
+    get:
+      operationId: adminGetReports
+      tags: [admin]
+      summary: Get all reports
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Report list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminReportListResponse"
+
+  /admin/reports/{id}:
+    delete:
+      operationId: adminDeleteReport
+      tags: [admin]
+      summary: Delete a report
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /admin/analytics:
+    get:
+      operationId: adminGetAnalytics
+      tags: [admin]
+      summary: Get platform analytics
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Analytics data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalyticsData"
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     HealthStatus:
       type: object
@@ -34,3 +739,568 @@ components:
       required:
         - status
 
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    SuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    RegisterRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 6
+        phone:
+          type: string
+        role:
+          type: string
+          enum: [tutor, parent]
+      required:
+        - name
+        - email
+        - password
+        - phone
+        - role
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: "#/components/schemas/UserProfile"
+      required:
+        - token
+        - user
+
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+          nullable: true
+        role:
+          type: string
+          enum: [admin, tutor, parent]
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - email
+        - role
+        - createdAt
+
+    CreatePostRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        class:
+          type: string
+        subjects:
+          type: string
+        genderPreference:
+          type: string
+          enum: [male, female, any]
+          nullable: true
+        medium:
+          type: string
+          enum: [english, hindi]
+        mode:
+          type: string
+          enum: [home, online]
+        address:
+          type: string
+        duration:
+          type: number
+        daysPerWeek:
+          type: integer
+        monthlyFee:
+          type: integer
+        description:
+          type: string
+          nullable: true
+        contactPhone:
+          type: string
+      required:
+        - title
+        - class
+        - subjects
+        - medium
+        - mode
+        - address
+        - duration
+        - daysPerWeek
+        - monthlyFee
+        - contactPhone
+
+    UpdatePostRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        class:
+          type: string
+        subjects:
+          type: string
+        genderPreference:
+          type: string
+          enum: [male, female, any]
+          nullable: true
+        medium:
+          type: string
+          enum: [english, hindi]
+        mode:
+          type: string
+          enum: [home, online]
+        address:
+          type: string
+        duration:
+          type: number
+        daysPerWeek:
+          type: integer
+        monthlyFee:
+          type: integer
+        description:
+          type: string
+          nullable: true
+        contactPhone:
+          type: string
+        featured:
+          type: boolean
+
+    TuitionPost:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        class:
+          type: string
+        subjects:
+          type: string
+        genderPreference:
+          type: string
+          enum: [male, female, any]
+          nullable: true
+        medium:
+          type: string
+          enum: [english, hindi]
+        mode:
+          type: string
+          enum: [home, online]
+        address:
+          type: string
+        duration:
+          type: number
+        daysPerWeek:
+          type: integer
+        monthlyFee:
+          type: integer
+        description:
+          type: string
+          nullable: true
+        featured:
+          type: boolean
+        createdById:
+          type: integer
+        createdByName:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - title
+        - class
+        - subjects
+        - medium
+        - mode
+        - address
+        - duration
+        - daysPerWeek
+        - monthlyFee
+        - featured
+        - createdById
+        - createdAt
+
+    PostListResponse:
+      type: object
+      properties:
+        posts:
+          type: array
+          items:
+            $ref: "#/components/schemas/TuitionPost"
+        total:
+          type: integer
+        page:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+        - posts
+        - total
+        - page
+        - totalPages
+
+    ContactResponse:
+      type: object
+      properties:
+        phone:
+          type: string
+      required:
+        - phone
+
+    ApplyRequest:
+      type: object
+      properties:
+        postId:
+          type: integer
+      required:
+        - postId
+
+    Application:
+      type: object
+      properties:
+        id:
+          type: integer
+        tutorId:
+          type: integer
+        postId:
+          type: integer
+        tutorName:
+          type: string
+          nullable: true
+        tutorEmail:
+          type: string
+          nullable: true
+        postTitle:
+          type: string
+          nullable: true
+        appliedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - tutorId
+        - postId
+        - appliedAt
+
+    CreateOrderRequest:
+      type: object
+      properties:
+        postId:
+          type: integer
+      required:
+        - postId
+
+    PaymentOrderResponse:
+      type: object
+      properties:
+        orderId:
+          type: string
+        amount:
+          type: integer
+        currency:
+          type: string
+        keyId:
+          type: string
+      required:
+        - orderId
+        - amount
+        - currency
+        - keyId
+
+    VerifyPaymentRequest:
+      type: object
+      properties:
+        razorpayOrderId:
+          type: string
+        razorpayPaymentId:
+          type: string
+        razorpaySignature:
+          type: string
+        postId:
+          type: integer
+      required:
+        - razorpayOrderId
+        - razorpayPaymentId
+        - razorpaySignature
+        - postId
+
+    VerifyPaymentResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        phone:
+          type: string
+          nullable: true
+        message:
+          type: string
+      required:
+        - success
+        - message
+
+    Payment:
+      type: object
+      properties:
+        id:
+          type: integer
+        tutorId:
+          type: integer
+        postId:
+          type: integer
+        postTitle:
+          type: string
+          nullable: true
+        amount:
+          type: integer
+        paymentStatus:
+          type: string
+          enum: [pending, success, failed]
+        razorpayOrderId:
+          type: string
+          nullable: true
+        razorpayPaymentId:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - tutorId
+        - postId
+        - amount
+        - paymentStatus
+        - createdAt
+
+    CreateReportRequest:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [post, user]
+        targetId:
+          type: integer
+        reason:
+          type: string
+      required:
+        - type
+        - targetId
+        - reason
+
+    DashboardStats:
+      type: object
+      properties:
+        totalUsers:
+          type: integer
+        totalTutors:
+          type: integer
+        totalParents:
+          type: integer
+        totalPosts:
+          type: integer
+        totalPayments:
+          type: integer
+        totalRevenue:
+          type: integer
+      required:
+        - totalUsers
+        - totalTutors
+        - totalParents
+        - totalPosts
+        - totalPayments
+        - totalRevenue
+
+    AdminUserListResponse:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserProfile"
+        total:
+          type: integer
+        page:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+        - users
+        - total
+        - page
+        - totalPages
+
+    AdminPaymentListResponse:
+      type: object
+      properties:
+        payments:
+          type: array
+          items:
+            $ref: "#/components/schemas/Payment"
+        total:
+          type: integer
+        page:
+          type: integer
+        totalPages:
+          type: integer
+        totalRevenue:
+          type: integer
+      required:
+        - payments
+        - total
+        - page
+        - totalPages
+        - totalRevenue
+
+    Report:
+      type: object
+      properties:
+        id:
+          type: integer
+        reporterId:
+          type: integer
+        reporterName:
+          type: string
+          nullable: true
+        type:
+          type: string
+          enum: [post, user]
+        targetId:
+          type: integer
+        reason:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - reporterId
+        - type
+        - targetId
+        - reason
+        - createdAt
+
+    AdminReportListResponse:
+      type: object
+      properties:
+        reports:
+          type: array
+          items:
+            $ref: "#/components/schemas/Report"
+        total:
+          type: integer
+        page:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+        - reports
+        - total
+        - page
+        - totalPages
+
+    ToggleFeaturedRequest:
+      type: object
+      properties:
+        featured:
+          type: boolean
+      required:
+        - featured
+
+    AnalyticsData:
+      type: object
+      properties:
+        dailyRegistrations:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+              count:
+                type: integer
+            required:
+              - date
+              - count
+        revenueByDay:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+              revenue:
+                type: integer
+            required:
+              - date
+              - revenue
+        topSubjects:
+          type: array
+          items:
+            type: object
+            properties:
+              subject:
+                type: string
+              count:
+                type: integer
+            required:
+              - subject
+              - count
+        topLocations:
+          type: array
+          items:
+            type: object
+            properties:
+              location:
+                type: string
+              count:
+                type: integer
+            required:
+              - location
+              - count
+      required:
+        - dailyRegistrations
+        - revenueByDay
+        - topSubjects
+        - topLocations
