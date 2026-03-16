@@ -16,7 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { 
   MapPin, GraduationCap, Clock, IndianRupee, CalendarDays, 
-  PhoneCall, ShieldCheck, CheckCircle2, ChevronLeft, LockKeyhole, BookOpen
+  PhoneCall, ShieldCheck, CheckCircle2, ChevronLeft, LockKeyhole, BookOpen, Loader2
 } from "lucide-react";
 import { format } from "date-fns";
 import { useState } from "react";
