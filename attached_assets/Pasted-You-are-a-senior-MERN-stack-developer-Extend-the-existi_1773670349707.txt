@@ -1,0 +1,233 @@
+You are a senior MERN stack developer.
+
+Extend the existing TutorConnect MERN application by implementing a fully functional **Admin Dashboard** with complete platform management capabilities.
+
+The Admin panel must be secure, scalable, and only accessible to users with role "admin".
+
+---
+
+ADMIN AUTHENTICATION
+
+Admin users must log in using the normal login system but must be redirected to:
+
+/admin/dashboard
+
+if their role is "admin".
+
+Use role-based middleware to protect all admin routes.
+
+Only admins should access these routes:
+
+/admin/dashboard
+/admin/users
+/admin/posts
+/admin/payments
+/admin/reports
+
+If a non-admin user tries to access admin routes, return a 403 unauthorized error.
+
+---
+
+ADMIN DASHBOARD OVERVIEW
+
+The admin dashboard must display key platform statistics including:
+
+* Total Users
+* Total Tutors
+* Total Parents
+* Total Tuition Posts
+* Total Payments
+* Total Revenue
+
+Display these statistics using dashboard cards.
+
+Example layout:
+
+Card 1: Total Users
+Card 2: Total Tutors
+Card 3: Total Tuition Posts
+Card 4: Total Revenue
+
+---
+
+USER MANAGEMENT MODULE
+
+Create a user management section where admin can:
+
+* View all users
+* Filter users by role (Tutor / Parent)
+* Search users by name or email
+* View user details
+* Ban or delete users
+
+User table fields:
+
+Name
+Email
+Role
+Phone
+Account status
+Created date
+
+Admin actions:
+
+Delete user
+Ban user
+View profile
+
+---
+
+TUTOR MANAGEMENT
+
+Create a section specifically for tutors.
+
+Admin should be able to:
+
+* View all tutors
+* Verify tutors
+* Remove fake tutors
+* View tutor activity
+
+Tutor fields:
+
+Name
+Subjects
+Location
+Verification status
+
+---
+
+TUITION POST MANAGEMENT
+
+Admin should be able to manage all tuition posts.
+
+Features:
+
+* View all posts
+* Delete spam posts
+* Edit incorrect posts
+* Mark posts as featured
+
+Post fields:
+
+Title
+Class
+Subjects
+Location
+Monthly Fee
+Created by
+Created date
+
+---
+
+PAYMENT MONITORING SYSTEM
+
+Create a payment monitoring section.
+
+Admin must see:
+
+* All payment transactions
+* Tutor who paid
+* Tuition post related to payment
+* Amount paid
+* Payment status
+* Payment date
+
+Also display:
+
+Total platform revenue.
+
+---
+
+CONTACT UNLOCK TRACKING
+
+Admin should see which tutor unlocked which parent's contact details.
+
+Fields:
+
+Tutor Name
+Tuition Post
+Amount Paid
+Date
+
+---
+
+REPORT SYSTEM
+
+Users should be able to report posts or users.
+
+Admin should have a report panel where they can:
+
+* View all reports
+* Investigate reports
+* Delete posts
+* Ban users
+
+---
+
+ANALYTICS SYSTEM
+
+Add analytics charts to the admin dashboard showing:
+
+* Daily user registrations
+* Total tuition posts created
+* Revenue growth
+* Most searched subjects
+* Top locations
+
+---
+
+CONTENT MANAGEMENT
+
+Admin should be able to manage website content including:
+
+* About Us page
+* Contact page
+* Privacy Policy
+* Terms and Conditions
+
+Allow editing content directly from the admin panel.
+
+---
+
+ADMIN UI REQUIREMENTS
+
+Create a professional admin panel UI with:
+
+Sidebar navigation
+Dashboard cards
+Tables with pagination
+Search functionality
+Responsive design
+
+Sidebar menu items:
+
+Dashboard
+Users
+Tutors
+Tuition Posts
+Payments
+Reports
+Analytics
+Settings
+
+---
+
+ADMIN API STRUCTURE
+
+Create backend routes:
+
+/api/admin/dashboard
+/api/admin/users
+/api/admin/tutors
+/api/admin/posts
+/api/admin/payments
+/api/admin/reports
+
+All routes must use admin authorization middleware.
+
+---
+
+FINAL GOAL
+
+Create a fully functional admin panel that allows the platform owner to control all users, posts, payments, reports, and analytics from one dashboard.
