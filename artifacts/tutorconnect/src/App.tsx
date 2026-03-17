@@ -75,6 +75,20 @@ function Router() {
         </ProtectedRoute>
       </Route>
 
+      {/* Static Pages */}
+      <Route path="/about">
+        <StandardLayout><About /></StandardLayout>
+      </Route>
+      <Route path="/contact">
+        <StandardLayout><Contact /></StandardLayout>
+      </Route>
+      <Route path="/privacy">
+        <StandardLayout><Privacy /></StandardLayout>
+      </Route>
+      <Route path="/terms">
+        <StandardLayout><Terms /></StandardLayout>
+      </Route>
+
       {/* Admin Routes */}
       <Route path="/admin">
         <ProtectedRoute allowedRoles={["admin"]}>
