@@ -153,7 +153,7 @@ function PostCard({ post, index }: { post: TuitionPost, index: number }) {
                     <GraduationCap className="w-4 h-4 text-slate-500" /> {post.subjects}
                   </div>
                   <div className="flex items-center gap-1.5 bg-slate-100 px-2.5 py-1 rounded-md">
-                    <MapPin className="w-4 h-4 text-slate-500" /> {post.location || post.address}
+                    <MapPin className="w-4 h-4 text-slate-500" /> {post.address}
                   </div>
                   <div className="flex items-center gap-1.5 bg-slate-100 px-2.5 py-1 rounded-md capitalize">
                     {post.mode} Mode

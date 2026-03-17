@@ -16,7 +16,7 @@ export default function AdminDashboard() {
     { title: "Total Users", value: data.totalUsers, icon: Users, color: "text-blue-500", bg: "bg-blue-100" },
     { title: "Active Posts", value: data.totalPosts, icon: BookOpen, color: "text-indigo-500", bg: "bg-indigo-100" },
     { title: "Successful Payments", value: data.totalPayments, icon: CreditCard, color: "text-emerald-500", bg: "bg-emerald-100" },
-    { title: "Total Revenue", value: `₹${data.totalRevenue}`, icon: IndianRupee, color: "text-amber-500", bg: "bg-amber-100" },
+    { title: "Total Revenue", value: `₹${(data.totalRevenue / 100).toLocaleString('en-IN')}`, icon: IndianRupee, color: "text-amber-500", bg: "bg-amber-100" },
   ];
 
   return (

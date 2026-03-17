@@ -111,7 +111,7 @@ export default function TutorDashboard() {
                           </div>
                           <div className="text-right">
                             <p className="text-sm font-medium text-slate-500">Amount Paid</p>
-                            <p className="text-xl font-bold text-slate-800">₹{payment.amount}</p>
+                            <p className="text-xl font-bold text-slate-800">₹{(payment.amount / 100).toLocaleString('en-IN')}</p>
                           </div>
                         </div>
                       </Card>
