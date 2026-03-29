@@ -38,7 +38,9 @@ export default function Register() {
     getDeviceId().then(setDeviceId);
   }, []);
 
-  const defaultRole = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "").get("role") as RegisterRequestRole || RegisterRequestRole.parent;
+  const searchParams = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "");
+  const defaultRole = searchParams.get("role") as RegisterRequestRole || RegisterRequestRole.parent;
+  const returnTo = searchParams.get("returnTo");
 
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -51,8 +53,14 @@ export default function Register() {
       onSuccess: (data) => {
         login(data.token, data.user);
         toast({ title: "Account created!", description: "Welcome to TutorSphere." });
-        if (data.user.role === "tutor") setLocation("/tutor/dashboard");
-        else setLocation("/parent/dashboard");
+        
+        if (returnTo) {
+          setLocation(returnTo);
+        } else if (data.user.role === "tutor") {
+          setLocation("/tutor/dashboard");
+        } else {
+          setLocation("/parent/dashboard");
+        }
       },
       onError: (error: any) => {
         toast({ 

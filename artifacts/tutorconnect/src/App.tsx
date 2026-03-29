@@ -53,7 +53,9 @@ function Router() {
       <Route path="/">
         <StandardLayout><Home /></StandardLayout>
       </Route>
-      <Route path="/pricing" component={Pricing} />
+      <Route path="/pricing">
+        <StandardLayout><Pricing /></StandardLayout>
+      </Route>
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
       <Route path="/forgot-password" component={ForgotPassword} />

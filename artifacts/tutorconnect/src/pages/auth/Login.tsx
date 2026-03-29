@@ -25,6 +25,8 @@ export default function Login() {
   const [, setLocation] = useLocation();
   const [showPassword, setShowPassword] = useState(false);
   const [deviceId, setDeviceId] = useState("");
+  const searchParams = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "");
+  const returnTo = searchParams.get("returnTo");
 
   useEffect(() => {
     getDeviceId().then(setDeviceId);
@@ -41,9 +43,16 @@ export default function Login() {
       onSuccess: (data) => {
         login(data.token, data.user);
         toast({ title: "Welcome back!", description: "Successfully logged in." });
-        if (data.user.role === "admin") setLocation("/admin/dashboard");
-        else if (data.user.role === "tutor") setLocation("/tutor/dashboard");
-        else setLocation("/parent/dashboard");
+        
+        if (returnTo) {
+          setLocation(returnTo);
+        } else if (data.user.role === "admin") {
+          setLocation("/admin/dashboard");
+        } else if (data.user.role === "tutor") {
+          setLocation("/tutor/dashboard");
+        } else {
+          setLocation("/parent/dashboard");
+        }
       },
       onError: (error: any) => {
         toast({ 

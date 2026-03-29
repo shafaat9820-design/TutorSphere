@@ -34,7 +34,7 @@ export function Navbar() {
 
   const navLinks = [
     { href: "/", label: "Home" },
-    { href: "/posts", label: "Find Tuitions" },
+    { href: "/posts", label: "Tuitions/Jobs" },
     { href: "/pricing", label: "Pricing" },
     { href: "/about", label: "About Us" },
     { href: "/contact", label: "Contact" },

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { 
   Users, GraduationCap, MapPin, Search, CheckCircle2, 
   ArrowRight, ShieldCheck, Zap, BookOpen, Star, Mail, Phone,
@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
+import { useToast } from "@/hooks/use-toast";
 
 const heroStats = [
   { value: "2,400+", label: "Active Tutors" },
@@ -16,7 +17,10 @@ const heroStats = [
 
 export default function Home() {
   const { user } = useAuth();
+  const { toast } = useToast();
+  const [, setLocation] = useLocation();
   const isTutor = user?.role === "tutor";
+  const isParent = user?.role === "parent";
   
   return (
     <div className="min-h-screen bg-white">
@@ -44,18 +48,29 @@ export default function Home() {
                 <Zap className="w-4 h-4 fill-primary text-primary" /> #1 Tutor Marketplace in India
               </div>
               <h1 className="text-5xl md:text-7xl font-display font-black text-white mb-8 leading-[1.1] tracking-tight">
-                Find the Perfect <span className="gradient-text italic">Tutor</span> For Your Child
+                {isTutor ? (
+                  <>Find the Perfect <span className="gradient-text italic">Tuition</span> For Your Career</>
+                ) : (
+                  <>Find the Perfect <span className="gradient-text italic">Tutor</span> For Your Child</>
+                )}
               </h1>
               <p className="text-xl text-slate-300 mb-10 leading-relaxed max-w-xl font-medium">
                 Connect directly with verified home tutors and online educators. Transparent pricing, zero commissions, and instant matching.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-5">
-                <Link href="/posts">
-                  <Button className="h-16 px-10 rounded-2xl bg-primary hover:bg-primary/90 text-white font-black text-lg shadow-2xl shadow-primary/20 flex items-center gap-3 group transition-all">
-                    Find a Tutor <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </Link>
+                <Button 
+                  onClick={() => {
+                    if (!user) {
+                      setLocation("/register?role=parent&returnTo=/posts");
+                    } else {
+                      setLocation("/posts");
+                    }
+                  }}
+                  className="h-16 px-10 rounded-2xl bg-primary hover:bg-primary/90 text-white font-black text-lg shadow-2xl shadow-primary/20 flex items-center gap-3 group transition-all"
+                >
+                  {!user ? "Post your Requirement" : (isTutor ? "Find a Tuition" : "Find a Tutor")} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Button>
                 {!isTutor && (
                   <Link href="/register?role=tutor">
                     <Button className="h-16 px-10 rounded-2xl bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-xl font-black text-lg transition-all">
@@ -83,39 +98,118 @@ export default function Home() {
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
+              transition={{ delay: 0.2, duration: 1 }}
               className="relative hidden lg:block"
             >
-              <div className="relative z-10 bg-white/5 p-4 rounded-[40px] border border-white/10 backdrop-blur-sm">
-                <img 
-                  src="/images/home_hero.png" 
-                  alt="Students Learning" 
-                  className="rounded-[32px] w-full shadow-2xl"
-                />
+              {/* Background Decorative Blurs */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-primary/10 rounded-full blur-[120px] -z-10 animate-pulse" />
+              <div className="absolute -top-20 -right-20 w-64 h-64 bg-violet-500/10 rounded-full blur-[80px] -z-10" />
+
+              {/* Central Premium Glass Dashboard */}
+              <div className="relative z-10 glass-premium p-1 rounded-[48px] border border-white/20 shadow-[0_22px_70px_8px_rgba(0,0,0,0.56)] overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
+                  
+                  {/* Hero Image / Video Placeholder with Glow */}
+                  <div className="relative h-[480px] overflow-hidden rounded-[44px] bg-slate-900 border border-white/10">
+                      <div className="absolute inset-0 bg-dot-pattern opacity-10" />
+                      
+                      {/* Interaction Layer: Discovering Tutors */}
+                      <div className="absolute top-8 left-8 right-8 flex items-center justify-between z-20">
+                          <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/20 flex items-center gap-2">
+                             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                             <span className="text-[10px] font-black uppercase tracking-widest text-white/80">Live Matching</span>
+                          </div>
+                          <div className="flex -space-x-3">
+                              {[1,2,3,4].map(i => (
+                                <div key={i} className="w-8 h-8 rounded-full border-2 border-slate-900 overflow-hidden shadow-xl">
+                                   <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i+10}`} alt="User" />
+                                </div>
+                              ))}
+                              <div className="w-8 h-8 rounded-full border-2 border-slate-900 bg-primary/20 backdrop-blur-md flex items-center justify-center text-[10px] font-bold text-white shadow-xl">
+                                 +24
+                              </div>
+                          </div>
+                      </div>
+
+                      {/* Featured Tutor Highlight (Main Event) */}
+                      <motion.div 
+                         initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                         animate={{ opacity: 1, scale: 1, y: 0 }}
+                         transition={{ delay: 0.8, duration: 0.8 }}
+                         className="absolute inset-0 flex items-center justify-center p-8"
+                      >
+                         <div className="relative w-full max-w-sm bg-white/10 backdrop-blur-2xl border border-white/30 rounded-3xl p-6 shadow-2xl transition-transform duration-700 group-hover:scale-[1.02]">
+                            <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 rounded-3xl border-4 border-slate-900 overflow-hidden shadow-2xl bg-slate-800">
+                               <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=tutor" alt="Verified Tutor" className="w-full h-full object-cover" />
+                               <div className="absolute bottom-1 right-1 bg-emerald-500 p-1 rounded-lg shadow-lg border-2 border-slate-900">
+                                  <ShieldCheck className="w-3.5 h-3.5 text-white fill-emerald-500" />
+                               </div>
+                            </div>
+                            
+                            <div className="mt-12 text-center space-y-3">
+                               <h4 className="text-xl font-black text-white">Rahul Deshmukh</h4>
+                               <div className="flex flex-wrap justify-center gap-2">
+                                  <span className="bg-primary/20 text-primary-foreground text-[10px] font-bold px-3 py-1 rounded-lg border border-primary/30 uppercase tracking-tighter">IIT-Delhi Alum</span>
+                                  <span className="bg-violet-500/20 text-violet-200 text-[10px] font-bold px-3 py-1 rounded-lg border border-violet-500/30 uppercase tracking-tighter">8+ Yrs Exp</span>
+                               </div>
+                               <p className="text-xs text-white/60 font-medium leading-relaxed">Specializing in Physics & Advanced Mathematics for Secondary/Higher students.</p>
+                               
+                               <div className="pt-4 flex items-center justify-between border-t border-white/10">
+                                   <div className="flex flex-col items-start gap-1">
+                                      <span className="text-[10px] uppercase font-black text-white/40 tracking-widest">Rate</span>
+                                      <span className="text-lg font-black text-white tracking-tighter">₹600<span className="text-[10px] text-white/60">/hr</span></span>
+                                   </div>
+                                   <div className="flex flex-col items-end gap-1">
+                                      <span className="text-[10px] uppercase font-black text-white/40 tracking-widest">Response</span>
+                                      <span className="text-emerald-400 font-bold text-[10px] flex items-center gap-1"><Zap className="w-3 h-3 fill-emerald-400" /> ~2 Hours</span>
+                                   </div>
+                               </div>
+                            </div>
+                         </div>
+                      </motion.div>
+
+                      {/* Floating Dynamic Notification */}
+                      <motion.div 
+                        initial={{ opacity: 0, x: 100 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 1.5, duration: 0.5 }}
+                        className="absolute bottom-8 left-8 right-8 bg-white/5 backdrop-blur-xl border border-white/10 p-3 rounded-2xl flex items-center gap-3"
+                      >
+                         <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary"><Search className="w-5 h-5" /></div>
+                         <div className="flex-1">
+                            <p className="text-[10px] text-white/40 font-black uppercase tracking-widest">New Requirement Found</p>
+                            <p className="text-white text-xs font-bold leading-tight">Physics Class 12th in Gurgaon Sector 45</p>
+                         </div>
+                         <div className="px-3 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-400 text-[10px] font-black tracking-widest uppercase">Match 98%</div>
+                      </motion.div>
+                  </div>
               </div>
+
+              {/* Enhanced Floating Badges */}
               <motion.div 
-                animate={{ y: [0, -15, 0] }}
+                animate={{ y: [0, -20, 0] }}
                 transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-                className="absolute -top-10 -left-10 glass-premium p-6 rounded-3xl z-20 shadow-xl border border-white/40"
+                className="absolute -top-12 -left-12 glass-premium-dark p-6 rounded-[32px] z-20 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10"
               >
                   <div className="flex items-center gap-4">
-                    <div className="bg-amber-100 p-2 rounded-xl"><Star className="w-6 h-6 text-amber-500 fill-amber-500" /></div>
+                    <div className="bg-amber-400/20 p-2.5 rounded-2xl border border-amber-400/20"><Star className="w-7 h-7 text-amber-400 fill-amber-400" /></div>
                     <div>
-                      <p className="font-black text-slate-900 leading-tight">4.9/5</p>
-                      <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Top Tutors</p>
+                      <p className="font-black text-4xl text-white leading-tight tracking-tight">4.9<span className="text-sm font-medium text-white/40">/5</span></p>
+                      <p className="text-[10px] uppercase font-bold text-white/40 tracking-widest mt-1">Tutor Quality Avg</p>
                     </div>
                   </div>
               </motion.div>
+
               <motion.div 
-                animate={{ y: [0, 15, 0] }}
+                animate={{ y: [0, 20, 0] }}
                 transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
-                className="absolute -bottom-10 -right-10 glass-premium p-6 rounded-3xl z-20 shadow-xl border border-white/40"
+                className="absolute -bottom-10 -right-16 glass-premium-dark p-6 rounded-[32px] z-20 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10"
               >
                   <div className="flex items-center gap-4">
-                    <div className="bg-primary/10 p-2 rounded-xl"><TrendingUp className="w-6 h-6 text-primary" /></div>
+                    <div className="bg-primary/20 p-2.5 rounded-2xl border border-primary/20"><Zap className="w-7 h-7 text-primary fill-primary" /></div>
                     <div>
-                      <p className="font-black text-slate-900 leading-tight">8,500+</p>
-                      <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Success Matches</p>
+                      <p className="font-black text-4xl text-white leading-tight tracking-tight">8,500+</p>
+                      <p className="text-[10px] uppercase font-bold text-white/40 tracking-widest mt-1">Success Matches</p>
                     </div>
                   </div>
               </motion.div>
@@ -163,11 +257,24 @@ export default function Home() {
                 <BenefitItem text="Verify qualifications and reviews on teacher profiles." />
                 <BenefitItem text="No commission taken from the student's monthly fee." />
               </ul>
-              <Link href="/posts">
-                <Button className="h-14 px-8 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold shadow-lg flex items-center gap-2">
-                  Post Requirement Now <ChevronRight className="w-4 h-4" />
-                </Button>
-              </Link>
+              <Button 
+                onClick={() => {
+                  if (!user) {
+                    setLocation("/register?role=parent&returnTo=/posts");
+                  } else if (isTutor) {
+                    toast({
+                      title: "Access Restricted",
+                      description: "You are logged in as a tutor. Only parents/students can post a tuition requirement. If you want to post a tuition requirement, please login as a parent.",
+                      variant: "destructive",
+                    });
+                  } else {
+                    setLocation("/posts");
+                  }
+                }}
+                className="h-14 px-8 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold shadow-lg flex items-center gap-2"
+              >
+                Post Requirement Now <ChevronRight className="w-4 h-4" />
+              </Button>
             </div>
             <div className="lg:w-1/2">
               <div className="bg-slate-50 rounded-[40px] p-2 border border-slate-100 group">
@@ -259,11 +366,24 @@ export default function Home() {
                 <BenefitItem variant="dark" text="Showcase your experience with a professional digital profile." />
                 <BenefitItem variant="dark" text="Direct payment from parents - we take 0% commission." />
               </ul>
-              <Link href="/register">
-                <Button className="h-14 px-8 rounded-2xl bg-primary hover:bg-primary/90 text-white font-bold shadow-lg flex items-center gap-2">
-                  Apply for Tuition <ChevronRight className="w-4 h-4" />
-                </Button>
-              </Link>
+              <Button 
+                onClick={() => {
+                  if (!user) {
+                    setLocation("/register?role=tutor&returnTo=/posts");
+                  } else if (isParent) {
+                    toast({
+                      title: "Access Restricted",
+                      description: "You are logged in as a parent. Only tutors can apply for a tuition. If you want to apply for a tuition, please login as a tutor.",
+                      variant: "destructive",
+                    });
+                  } else {
+                    setLocation("/posts");
+                  }
+                }}
+                className="h-14 px-8 rounded-2xl bg-primary hover:bg-primary/90 text-white font-bold shadow-lg flex items-center gap-2"
+              >
+                Apply for Tuition <ChevronRight className="w-4 h-4" />
+              </Button>
             </div>
             <div className="lg:w-1/2">
                <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 p-10 rounded-[40px] shadow-2xl group flex flex-col hover:scale-[1.02] transition-transform">
@@ -316,8 +436,30 @@ export default function Home() {
             <h2 className="text-4xl md:text-6xl font-display font-black mb-8 leading-tight">Start Your Journey Today</h2>
             <p className="text-primary-foreground/80 text-lg mb-12 font-medium">Join thousands of parents and tutors who have found their perfect match.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/posts"><Button className="h-16 px-10 rounded-2xl bg-white text-primary hover:bg-slate-100 font-bold text-lg shadow-xl">Hire a Tutor</Button></Link>
-              <Link href="/register"><Button className="h-16 px-10 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-lg shadow-xl">Join the Community</Button></Link>
+              <Button 
+                onClick={() => {
+                  if (!user) {
+                    setLocation("/register?role=parent&returnTo=/posts");
+                  } else {
+                    setLocation("/posts");
+                  }
+                }}
+                className="h-16 px-10 rounded-2xl bg-white text-primary hover:bg-slate-100 font-bold text-lg shadow-xl"
+              >
+                {isTutor ? "Find a Tuition" : "Hire a Tutor"}
+              </Button>
+              <Button 
+                onClick={() => {
+                  if (!user) {
+                    setLocation("/register");
+                  } else {
+                    setLocation(isTutor ? "/tutor/dashboard" : "/parent/dashboard");
+                  }
+                }}
+                className="h-16 px-10 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-lg shadow-xl"
+              >
+                {isTutor ? "Boost Your Career" : "Join the Community"}
+              </Button>
             </div>
          </div>
       </section>

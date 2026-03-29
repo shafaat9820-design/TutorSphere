@@ -38,7 +38,7 @@ export default function PostList() {
           <div className="inline-flex items-center gap-2 bg-violet-500/10 border border-violet-500/20 text-violet-300 text-xs font-semibold px-3 py-1.5 rounded-full mb-5">
             <Sparkles className="w-3.5 h-3.5" /> Live Requirements
           </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-3 text-white">Find <span className="gradient-text">Tuitions</span></h1>
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-3 text-white"><span className="gradient-text">Tuitions/Jobs</span></h1>
           <p className="text-slate-400 text-lg max-w-xl mb-10">Browse the latest requirements posted by parents and students. Apply to the ones that match your expertise.</p>
 
           {/* Search bar */}

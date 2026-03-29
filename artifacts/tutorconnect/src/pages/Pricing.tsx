@@ -171,10 +171,18 @@ export default function Pricing() {
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-16 space-y-4">
           <h1 className="text-4xl md:text-5xl font-display font-bold text-slate-900 tracking-tight">
-            Elevate Your <span className="text-violet-600">Teaching Career</span>
+            {user?.role === "parent" ? (
+              <>Find the Perfect <span className="text-violet-600">Home Tutor</span></>
+            ) : (
+              <>Elevate Your <span className="text-violet-600">Teaching Career</span></>
+            )}
           </h1>
           <p className="text-lg text-slate-600 font-medium">
-            Unlock student contact details instantly. Choose the plan that fits your growth.
+            {user?.role === "parent" ? (
+              "Post your requirements and match with the best qualified tutors in your area."
+            ) : (
+              "Unlock student contact details instantly. Choose the plan that fits your growth."
+            )}
           </p>
         </div>
 
