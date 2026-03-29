@@ -1,13 +1,16 @@
 import { Router, type IRouter } from "express";
 import healthRouter from "./health";
-import authRouter from "./auth.js";
-import postsRouter from "./posts.js";
-import applicationsRouter from "./applications.js";
-import paymentsRouter from "./payments.js";
-import reportsRouter from "./reports.js";
-import adminRouter from "./admin.js";
+import authRouter from "./auth";
+import postsRouter from "./posts";
+import applicationsRouter from "./applications";
+import paymentsRouter from "./payments";
+import reportsRouter from "./reports";
+import adminRouter from "./admin";
+import { generalLimiter } from "../middleware/rateLimiter";
 
 const router: IRouter = Router();
+
+router.use(generalLimiter);
 
 router.use(healthRouter);
 router.use(authRouter);

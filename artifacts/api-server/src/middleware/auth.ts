@@ -5,7 +5,11 @@ export interface AuthRequest extends Request {
   user?: { id: number; role: string; email: string };
 }
 
-const JWT_SECRET = process.env.JWT_SECRET || "tutorconnect_secret_key_2024";
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  console.error("[AUTH] FATAL: JWT_SECRET environment variable is not set!");
+}
+const getSecret = () => JWT_SECRET || "tutorconnect_secret_key_2024";
 
 export function authenticate(
   req: AuthRequest,
@@ -19,7 +23,7 @@ export function authenticate(
   }
   const token = authHeader.slice(7);
   try {
-    const payload = jwt.verify(token, JWT_SECRET) as {
+    const payload = jwt.verify(token, getSecret()) as unknown as {
       id: number;
       role: string;
       email: string;

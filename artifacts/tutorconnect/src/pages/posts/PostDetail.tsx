@@ -16,7 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { 
   MapPin, GraduationCap, Clock, IndianRupee, CalendarDays, 
-  PhoneCall, ShieldCheck, CheckCircle2, ChevronLeft, LockKeyhole, BookOpen, Loader2
+  PhoneCall, ShieldCheck, CheckCircle2, ChevronLeft, LockKeyhole, BookOpen, Loader2, Zap
 } from "lucide-react";
 import { format } from "date-fns";
 import { useState } from "react";
@@ -36,6 +36,7 @@ export default function PostDetail() {
   // Try to fetch contact - if it 402s, we haven't paid.
   const { data: contactData, isError: isContactError } = useGetPostContact(postId, {
     query: {
+      queryKey: [`/api/posts/${postId}/contact`],
       enabled: !!user && user.role === "tutor",
       retry: false
     },
@@ -63,11 +64,36 @@ export default function PostDetail() {
     request: { headers: getAuthHeaders() }
   });
 
+  const handleFreeUnlock = async () => {
+    try {
+      setIsProcessingPayment(true);
+      const response = await fetch(`/api/posts/${postId}/unlock-free`, {
+        method: "POST",
+        headers: getAuthHeaders()
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+
+      toast({ title: "Success", description: "Contact unlocked using your free trial!" });
+      queryClient.invalidateQueries({ queryKey: [`/api/posts/${postId}/contact`] });
+      // We should also refresh the user profile to update freeContactUsed
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
+    } catch (err: any) {
+      toast({ title: "Unlock Failed", description: err.message, variant: "destructive" });
+    } finally {
+      setIsProcessingPayment(false);
+    }
+  };
+
   const handleUnlockContact = async () => {
+    if (user && !user.freeContactUsed) {
+      return handleFreeUnlock();
+    }
+
     try {
       setIsProcessingPayment(true);
       const order = await createOrder({ data: { postId } });
-      
+// ... rest of the function (merged in replacement)
       const res = await loadRazorpay();
       if (!res) throw new Error("Razorpay SDK failed to load. Are you online?");
 
@@ -75,7 +101,7 @@ export default function PostDetail() {
         key: order.keyId,
         amount: order.amount,
         currency: order.currency,
-        name: "TutorConnect",
+        name: "TutorSphere",
         description: "Unlock Parent Contact Details",
         order_id: order.orderId,
         handler: async function (response: any) {
@@ -133,7 +159,7 @@ export default function PostDetail() {
             {post.title}
           </h1>
           <p className="text-slate-400 flex items-center gap-2 text-sm md:text-base">
-            Posted on {format(new Date(post.createdAt), 'MMMM d, yyyy')} by {post.createdByName || "Parent"}
+            Posted on {format(new Date(post.createdAt.endsWith('Z') || post.createdAt.includes('+') ? post.createdAt : post.createdAt + 'Z'), 'MMMM d, yyyy')} by {post.createdByName || "Parent"}
           </p>
         </div>
       </div>
@@ -151,7 +177,7 @@ export default function PostDetail() {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8 mb-8">
                   <DetailItem icon={GraduationCap} label="Subjects" value={post.subjects} />
-                  <DetailItem icon={MapPin} label="Location" value={post.address} />
+                  <DetailItem icon={MapPin} label="Location" value={`${post.address}${post.state ? `, ${post.state}` : ""}`} />
                   <DetailItem icon={CalendarDays} label="Frequency" value={`${post.daysPerWeek} days/week`} />
                   <DetailItem icon={Clock} label="Duration" value={`${post.duration} hours/day`} />
                   <DetailItem icon={ShieldCheck} label="Medium" value={<span className="capitalize">{post.medium}</span>} />
@@ -201,23 +227,66 @@ export default function PostDetail() {
                     </Button>
 
                     {contactData?.phone ? (
-                      <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-center mt-4">
+                      <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-center mt-4 shadow-sm">
                         <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
-                        <p className="text-emerald-800 font-bold mb-1">Contact Unlocked</p>
-                        <p className="text-xl font-bold text-slate-800 tracking-wider font-mono">{contactData.phone}</p>
+                        <p className="text-emerald-800 font-bold mb-1 uppercase tracking-widest text-[10px]">Contact Unlocked</p>
+                        <p className="text-2xl font-bold text-slate-900 tracking-widest font-mono">{contactData.phone}</p>
                       </div>
                     ) : (
-                      <Button 
-                        onClick={handleUnlockContact}
-                        disabled={isProcessingPayment}
-                        className="w-full h-14 rounded-xl font-bold bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 shadow-lg shadow-emerald-500/25 border-0 hover:-translate-y-1 transition-all"
-                      >
-                        {isProcessingPayment ? <Loader2 className="w-5 h-5 animate-spin" /> : (
-                          <><LockKeyhole className="w-5 h-5 mr-2" /> Unlock Contact (₹49)</>
-                        )}
-                      </Button>
+                      <div className="space-y-4 pt-4">
+                        {/* Blurred Contact Preview */}
+                        <div className="relative group overflow-hidden rounded-2xl border border-slate-200 bg-slate-50/50 p-6 text-center">
+                          <div className="absolute inset-0 bg-white/40 backdrop-blur-md z-10 flex flex-col items-center justify-center p-4">
+                            <LockKeyhole className="w-8 h-8 text-slate-400 mb-2 group-hover:scale-110 transition-transform" />
+                            <p className="text-sm font-bold text-slate-800 uppercase tracking-tighter">Contact Number Locked</p>
+                          </div>
+                          <p className="text-2xl font-bold text-slate-200 blur-[2px] select-none tracking-widest font-mono">+91 99XXXXXX21</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-3">
+                          <Button 
+                            onClick={handleUnlockContact}
+                            disabled={isProcessingPayment}
+                            className={`w-full h-12 rounded-xl font-bold text-white shadow-lg border-0 transition-all flex items-center justify-center gap-2 ${
+                              user && !user.freeContactUsed 
+                                ? "bg-emerald-600 hover:bg-emerald-700" 
+                                : "bg-slate-900 hover:bg-slate-800"
+                            }`}
+                          >
+                            {isProcessingPayment ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                              <>
+                                {user && !user.freeContactUsed ? (
+                                  <><Zap className="w-4 h-4 fill-white" /> Unlock for Free (Trial)</>
+                                ) : (
+                                  <>Unlock for ₹49 or get unlimited access</>
+                                )}
+                              </>
+                            )}
+                          </Button>
+                          
+                          {user?.freeContactUsed && (
+                             <p className="text-center text-xs font-semibold text-rose-500 mt-1 mb-2">
+                               Free access used. Upgrade to continue.
+                             </p>
+                          )}
+
+                          <div className="relative py-2 mt-2">
+                            <div className="absolute inset-0 flex items-center"><Separator /></div>
+                            <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-widest"><span className="bg-white px-2 text-slate-400">OR</span></div>
+                          </div>
+
+                          <Link href="/pricing" className="w-full">
+                            <Button 
+                              variant="outline"
+                              className="w-full h-12 rounded-xl font-bold border-2 border-violet-200 text-violet-700 hover:bg-violet-50 hover:border-violet-300 transition-all flex items-center justify-center gap-2"
+                            >
+                              <Zap className="w-4 h-4 fill-violet-600 text-violet-600" />
+                              Get Unlimited Access
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
                     )}
-                    <p className="text-xs text-center text-slate-500 mt-2">Secure payment via Razorpay. Instantly view parent's phone number.</p>
                   </div>
                 ) : (
                   <div className="text-center bg-slate-50 p-4 rounded-xl">

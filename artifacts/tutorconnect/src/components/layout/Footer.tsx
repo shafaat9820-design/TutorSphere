@@ -1,60 +1,90 @@
 import { Link } from "wouter";
-import { BookOpen, Mail, MapPin, Phone } from "lucide-react";
+import { BookOpen, Mail, MapPin, Phone, Twitter, Linkedin, Instagram } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="bg-slate-900 text-slate-300 py-12 md:py-16">
-      <div className="container mx-auto px-4 md:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+    <footer className="bg-[#0c0a18] text-slate-400 relative overflow-hidden">
+      {/* Top glow */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-violet-500/40 to-transparent" />
+      <div className="absolute top-0 left-1/4 w-[500px] h-[300px] bg-violet-900/20 blur-[100px] pointer-events-none" />
+
+      <div className="container mx-auto px-4 md:px-6 pt-16 pb-8 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+          {/* Brand */}
           <div className="md:col-span-1">
-            <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="bg-primary text-white p-1.5 rounded-lg">
-                <BookOpen className="w-5 h-5" />
-              </div>
-              <span className="font-display font-bold text-xl text-white">
-                TutorConnect
-              </span>
+            <Link href="/" className="flex items-center mb-5 group w-fit">
+              <img src="/logo.png" alt="TutorSphere" className="h-14 w-auto object-contain transition-transform group-hover:scale-105" />
             </Link>
-            <p className="text-sm text-slate-400 leading-relaxed mb-6">
+            <p className="text-sm text-slate-500 leading-relaxed mb-6">
               Connecting passionate educators with eager learners. The premium marketplace for home and online tuitions.
             </p>
+            <div className="flex items-center gap-3">
+              {[Twitter, Linkedin, Instagram].map((Icon, i) => (
+                <button key={i} className="w-8 h-8 rounded-lg bg-slate-800 hover:bg-violet-600 flex items-center justify-center transition-colors duration-200">
+                  <Icon className="w-3.5 h-3.5 text-slate-400 hover:text-white" />
+                </button>
+              ))}
+            </div>
           </div>
-          
+
+          {/* Platform */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Platform</h4>
+            <h4 className="text-white font-semibold text-sm uppercase tracking-wider mb-5">Platform</h4>
             <ul className="space-y-3 text-sm">
-              <li><Link href="/posts" className="hover:text-primary transition-colors">Find Tuitions</Link></li>
-              <li><Link href="/register?role=tutor" className="hover:text-primary transition-colors">Become a Tutor</Link></li>
-              <li><Link href="/register?role=parent" className="hover:text-primary transition-colors">Post a Requirement</Link></li>
-              <li><Link href="/about" className="hover:text-primary transition-colors">About Us</Link></li>
-            </ul>
-          </div>
-          
-          <div>
-            <h4 className="text-white font-semibold mb-4">Support</h4>
-            <ul className="space-y-3 text-sm">
-              <li><Link href="/contact" className="hover:text-primary transition-colors">Help Center</Link></li>
-              <li><Link href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="hover:text-primary transition-colors">Terms of Service</Link></li>
-              <li><Link href="/contact" className="hover:text-primary transition-colors">Report an Issue</Link></li>
+              {[
+                { href: "/posts", label: "Find Tuitions" },
+                { href: "/register?role=tutor", label: "Become a Tutor" },
+                { href: "/register?role=parent", label: "Post Requirement" },
+                { href: "/about", label: "About Us" },
+              ].map(l => (
+                <li key={l.label}>
+                  <Link href={l.href} className="text-slate-500 hover:text-violet-400 transition-colors duration-150">{l.label}</Link>
+                </li>
+              ))}
             </ul>
           </div>
 
+          {/* Support */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Contact Us</h4>
+            <h4 className="text-white font-semibold text-sm uppercase tracking-wider mb-5">Support</h4>
             <ul className="space-y-3 text-sm">
-              <li className="flex items-center gap-2"><Mail className="w-4 h-4 text-primary" /> support@tutorconnect.com</li>
-              <li className="flex items-center gap-2"><Phone className="w-4 h-4 text-primary" /> +91 98765 43210</li>
-              <li className="flex items-center gap-2"><MapPin className="w-4 h-4 text-primary" /> Education Hub, New Delhi, India</li>
+              {[
+                { href: "/contact", label: "Help Center" },
+                { href: "/privacy", label: "Privacy Policy" },
+                { href: "/terms", label: "Terms of Service" },
+                { href: "/contact", label: "Report an Issue" },
+              ].map(l => (
+                <li key={l.label}>
+                  <Link href={l.href} className="text-slate-500 hover:text-violet-400 transition-colors duration-150">{l.label}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h4 className="text-white font-semibold text-sm uppercase tracking-wider mb-5">Contact</h4>
+            <ul className="space-y-3.5 text-sm">
+              <li className="flex items-start gap-3">
+                <Mail className="w-4 h-4 text-violet-500 mt-0.5 shrink-0" />
+                <span className="text-slate-500">tutorsphereofficial@gmail.com</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <Phone className="w-4 h-4 text-violet-500 mt-0.5 shrink-0" />
+                <span className="text-slate-500">+91 82870 6*****</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <MapPin className="w-4 h-4 text-violet-500 mt-0.5 shrink-0" />
+                <span className="text-slate-500">Education Hub, New Delhi, India</span>
+              </li>
             </ul>
           </div>
         </div>
-        
-        <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-500">
-          <p>© {new Date().getFullYear()} TutorConnect. All rights reserved.</p>
-          <div className="flex items-center gap-4">
-            <span>Built with precision.</span>
-          </div>
+
+        {/* Bottom bar */}
+        <div className="border-t border-slate-800 pt-7 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600">
+          <p>© {new Date().getFullYear()} TutorSphere. All rights reserved.</p>
+          <p>Built with precision & care.</p>
         </div>
       </div>
     </footer>

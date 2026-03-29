@@ -1,8 +1,8 @@
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Menu, X, LogOut, LayoutDashboard, User } from "lucide-react";
-import { useState } from "react";
+import { Menu, X, LogOut, LayoutDashboard, UserCircle } from "lucide-react";
+import { useState, useEffect } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +17,13 @@ export function Navbar() {
   const { user, logout } = useAuth();
   const [location] = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const getDashboardLink = () => {
     if (!user) return "/";
@@ -26,112 +33,132 @@ export function Navbar() {
   };
 
   const navLinks = [
+    { href: "/", label: "Home" },
     { href: "/posts", label: "Find Tuitions" },
+    { href: "/pricing", label: "Pricing" },
     { href: "/about", label: "About Us" },
     { href: "/contact", label: "Contact" },
   ];
 
+  const roleColors: Record<string, string> = {
+    admin: "bg-red-100 text-red-700",
+    tutor: "bg-emerald-100 text-emerald-700",
+    parent: "bg-violet-100 text-violet-700",
+  };
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-white/80 backdrop-blur-xl">
+    <header
+      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
+        scrolled
+          ? "bg-white/90 backdrop-blur-2xl shadow-md shadow-slate-200/50 border-b border-slate-200/60"
+          : "bg-white/60 backdrop-blur-xl border-b border-slate-200/40"
+      }`}
+    >
       <div className="container mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
-          <div className="bg-primary text-primary-foreground p-1.5 rounded-xl shadow-sm">
-            <BookOpen className="w-5 h-5" />
-          </div>
-          <span className="font-display font-bold text-xl tracking-tight text-foreground">
-            TutorConnect
-          </span>
+        {/* Logo */}
+        <Link href="/" className="flex items-center group">
+          <img src="/logo.png" alt="TutorSphere" className="h-12 w-auto object-contain transition-transform group-hover:scale-105" />
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-8">
-          <div className="flex items-center gap-6">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`text-sm font-medium transition-colors hover:text-primary ${
-                  location.startsWith(link.href) ? "text-primary" : "text-muted-foreground"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-4 border-l border-border pl-6">
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-                    <Avatar className="h-9 w-9 border border-primary/10">
-                      <AvatarFallback className="bg-primary/5 text-primary">
-                        {user.name.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">{user.name}</p>
-                      <p className="text-xs leading-none text-muted-foreground">
-                        {user.email}
-                      </p>
-                      <span className="text-xs inline-block mt-1 px-2 py-0.5 bg-primary/10 text-primary rounded-full w-fit capitalize">
-                        {user.role}
-                      </span>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <Link href={getDashboardLink()}>
-                    <DropdownMenuItem className="cursor-pointer">
-                      <LayoutDashboard className="mr-2 h-4 w-4" />
-                      <span>Dashboard</span>
-                    </DropdownMenuItem>
-                  </Link>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={logout} className="text-destructive focus:text-destructive cursor-pointer">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <>
-                <Link href="/login">
-                  <Button variant="ghost" className="font-medium">
-                    Log in
-                  </Button>
-                </Link>
-                <Link href="/register">
-                  <Button className="font-medium rounded-xl shadow-md shadow-primary/20 hover-elevate">
-                    Sign up
-                  </Button>
-                </Link>
-              </>
-            )}
-          </div>
+        <nav className="hidden md:flex items-center gap-1">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                location === link.href || (link.href !== "/" && location.startsWith(link.href))
+                  ? "text-violet-700 bg-violet-50/80"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70"
+              }`}
+            >
+              {link.label}
+              {(location === link.href || (link.href !== "/" && location.startsWith(link.href))) && (
+                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-4 h-0.5 rounded-full bg-violet-600" />
+              )}
+            </Link>
+          ))}
         </nav>
 
-        {/* Mobile Menu Toggle */}
+        {/* Auth Controls */}
+        <div className="hidden md:flex items-center gap-3">
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-9 w-9 rounded-full p-0 ring-2 ring-transparent hover:ring-violet-200 transition-all">
+                  <Avatar className="h-9 w-9">
+                    <AvatarFallback className="bg-gradient-to-br from-violet-500 to-purple-600 text-white text-sm font-bold">
+                      {user.name.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-60 rounded-2xl border border-slate-200/60 shadow-2xl shadow-slate-300/30 p-2" align="end" forceMount>
+                <DropdownMenuLabel className="font-normal px-2 py-2">
+                  <div className="flex flex-col gap-1">
+                    <p className="text-sm font-semibold text-slate-900">{user.name}</p>
+                    <p className="text-xs text-slate-500">{user.email}</p>
+                    <span className={`text-xs inline-block mt-1 px-2 py-0.5 rounded-full w-fit font-semibold capitalize ${roleColors[user.role] || "bg-slate-100 text-slate-600"}`}>
+                      {user.role}
+                    </span>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="my-1 bg-slate-100" />
+                <Link href="/profile">
+                  <DropdownMenuItem className="cursor-pointer rounded-xl px-3 py-2.5 hover:bg-violet-50 focus:bg-violet-50">
+                    <UserCircle className="mr-2.5 h-4 w-4 text-violet-600" />
+                    <span className="font-medium">Edit Profile</span>
+                  </DropdownMenuItem>
+                </Link>
+                <Link href={getDashboardLink()}>
+                  <DropdownMenuItem className="cursor-pointer rounded-xl px-3 py-2.5 hover:bg-violet-50 focus:bg-violet-50">
+                    <LayoutDashboard className="mr-2.5 h-4 w-4 text-violet-600" />
+                    <span className="font-medium">Dashboard</span>
+                  </DropdownMenuItem>
+                </Link>
+                <DropdownMenuSeparator className="my-1 bg-slate-100" />
+                <DropdownMenuItem onClick={logout} className="cursor-pointer rounded-xl px-3 py-2.5 text-red-600 hover:bg-red-50 focus:bg-red-50 focus:text-red-600">
+                  <LogOut className="mr-2.5 h-4 w-4" />
+                  <span className="font-medium">Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <>
+              <Link href="/login">
+                <Button variant="ghost" className="font-medium text-slate-700 hover:text-violet-700 hover:bg-violet-50 rounded-xl">
+                  Log in
+                </Button>
+              </Link>
+              <Link href="/register">
+                <Button className="font-semibold rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 shadow-md shadow-violet-500/25 text-white border-0 hover:-translate-y-px transition-all duration-200">
+                  Get Started
+                </Button>
+              </Link>
+            </>
+          )}
+        </div>
+
+        {/* Mobile Toggle */}
         <button
-          className="md:hidden p-2 text-foreground"
+          className="md:hidden p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
-          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
 
       {/* Mobile Nav */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t border-border bg-white py-4 px-4 shadow-lg absolute w-full left-0 top-16">
-          <nav className="flex flex-col gap-4">
+        <div className="md:hidden border-t border-slate-200/60 bg-white/95 backdrop-blur-2xl py-4 px-4 shadow-2xl absolute w-full left-0 top-16">
+          <nav className="flex flex-col gap-1">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-base font-medium text-foreground py-2 border-b border-border/50"
+                className={`text-sm font-medium py-2.5 px-3 rounded-xl transition-colors ${
+                  location === link.href ? "bg-violet-50 text-violet-700" : "text-slate-700 hover:bg-slate-100"
+                }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {link.label}
@@ -141,28 +168,25 @@ export function Navbar() {
               <>
                 <Link
                   href={getDashboardLink()}
-                  className="text-base font-medium text-foreground py-2 border-b border-border/50 flex items-center gap-2"
+                  className="text-sm font-medium text-slate-700 py-2.5 px-3 rounded-xl hover:bg-slate-100 flex items-center gap-2"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <LayoutDashboard className="w-4 h-4" /> Dashboard
+                  <LayoutDashboard className="w-4 h-4 text-violet-600" /> Dashboard
                 </Link>
                 <button
-                  onClick={() => {
-                    logout();
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="text-left text-base font-medium text-destructive py-2 flex items-center gap-2"
+                  onClick={() => { logout(); setIsMobileMenuOpen(false); }}
+                  className="text-left text-sm font-medium text-red-600 py-2.5 px-3 rounded-xl hover:bg-red-50 flex items-center gap-2"
                 >
                   <LogOut className="w-4 h-4" /> Log out
                 </button>
               </>
             ) : (
-              <div className="flex flex-col gap-2 pt-2">
+              <div className="flex flex-col gap-2 pt-2 mt-2 border-t border-slate-100">
                 <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button variant="outline" className="w-full justify-center">Log in</Button>
+                  <Button variant="outline" className="w-full justify-center rounded-xl">Log in</Button>
                 </Link>
                 <Link href="/register" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button className="w-full justify-center">Sign up</Button>
+                  <Button className="w-full justify-center rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 text-white border-0">Get Started</Button>
                 </Link>
               </div>
             )}

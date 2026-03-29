@@ -22,4 +22,5 @@ export interface CreatePostRequest {
   monthlyFee: number;
   description?: string | null;
   contactPhone: string;
+  state: string;
 }

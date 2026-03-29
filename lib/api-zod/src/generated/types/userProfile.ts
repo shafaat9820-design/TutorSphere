@@ -5,6 +5,7 @@
  * TutorConnect API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { UserProfilePlanType } from "./userProfilePlanType";
 import type { UserProfileRole } from "./userProfileRole";
 
 export interface UserProfile {
@@ -13,5 +14,16 @@ export interface UserProfile {
   email: string;
   phone?: string | null;
   role: UserProfileRole;
+  freeContactUsed: boolean;
+  freePostUsedAt?: Date | null;
+  contactsUnlockedCount: number;
+  parentPlanExpiry?: Date | null;
+  activePostCount: number;
+  isVerified: boolean;
+  deviceId?: string | null;
+  lastIP?: string | null;
+  isSuspicious: boolean;
+  planType: UserProfilePlanType;
+  planExpiry?: Date | null;
   createdAt: Date;
 }

@@ -17,15 +17,24 @@ export const paymentStatusEnum = pgEnum("payment_status", [
   "failed",
 ]);
 
+export const paymentTypeEnum = pgEnum("payment_type", [
+  "post_unlock",
+  "weekly_plan",
+  "monthly_plan",
+  "parent_plan",
+]);
+
 export const paymentsTable = pgTable("payments", {
   id: serial("id").primaryKey(),
   tutorId: integer("tutor_id")
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
   postId: integer("post_id")
-    .notNull()
     .references(() => tuitionPostsTable.id, { onDelete: "cascade" }),
   amount: integer("amount").notNull().default(4900),
+  paymentType: paymentTypeEnum("payment_type")
+    .notNull()
+    .default("post_unlock"),
   paymentStatus: paymentStatusEnum("payment_status")
     .notNull()
     .default("pending"),

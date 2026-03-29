@@ -13,5 +13,6 @@ export interface RegisterRequest {
   /** @minLength 6 */
   password: string;
   phone: string;
+  otpCode: string;
   role: RegisterRequestRole;
 }

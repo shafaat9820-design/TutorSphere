@@ -57,6 +57,7 @@ export * from "./updatePostRequestGenderPreference";
 export * from "./updatePostRequestMedium";
 export * from "./updatePostRequestMode";
 export * from "./userProfile";
+export * from "./userProfilePlanType";
 export * from "./userProfileRole";
 export * from "./verifyPaymentRequest";
 export * from "./verifyPaymentResponse";

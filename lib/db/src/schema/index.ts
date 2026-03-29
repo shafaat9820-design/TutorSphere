@@ -22,3 +22,4 @@ export * from "./posts";
 export * from "./applications";
 export * from "./payments";
 export * from "./reports";
+export * from "./auth";

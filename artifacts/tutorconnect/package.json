@@ -1,5 +1,5 @@
 {
-  "name": "@workspace/tutorconnect",
+  "name": "@workspace/tutorsphere",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -73,5 +73,9 @@
     "vite": "catalog:",
     "wouter": "^3.3.5",
     "zod": "catalog:"
+  },
+  "dependencies": {
+    "@fingerprintjs/fingerprintjs": "^5.1.0",
+    "firebase": "^12.11.0"
   }
 }

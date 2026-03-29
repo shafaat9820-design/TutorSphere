@@ -1,149 +1,359 @@
-import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { BookOpen, GraduationCap, MapPin, Search, Star, ShieldCheck, Zap } from "lucide-react";
+import { Link } from "wouter";
+import { 
+  Users, GraduationCap, MapPin, Search, CheckCircle2, 
+  ArrowRight, ShieldCheck, Zap, BookOpen, Star, Mail, Phone,
+  ChevronRight, Award, MessageSquare, TrendingUp
+} from "lucide-react";
 import { motion } from "framer-motion";
+import { useAuth } from "@/lib/auth";
+
+const heroStats = [
+  { value: "2,400+", label: "Active Tutors" },
+  { value: "8,500+", label: "Happy Students" },
+  { value: "4.9/5", label: "Avg Rating" },
+];
 
 export default function Home() {
+  const { user } = useAuth();
+  const isTutor = user?.role === "tutor";
+  
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="relative pt-24 pb-32 overflow-hidden">
+    <div className="min-h-screen bg-white">
+      {/* Dynamic Hero Section */}
+      <section className="relative min-h-[95vh] flex items-center pt-24 pb-32 overflow-hidden bg-slate-950">
+        {/* Background Overlay */}
         <div className="absolute inset-0 z-0">
           <img 
-            src={`${import.meta.env.BASE_URL}images/hero-bg.png`} 
-            alt="Hero Background" 
-            className="w-full h-full object-cover opacity-15"
+            src="/images/home_hero.png" 
+            alt="Learning Background" 
+            className="w-full h-full object-cover opacity-40"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/90" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent" />
+          <div className="absolute top-[-10%] left-[-5%] w-[600px] h-[600px] rounded-full bg-primary/20 blur-[120px]" />
         </div>
-        
-        <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="max-w-2xl"
+              transition={{ duration: 0.8 }}
             >
-              <Badge className="bg-primary/10 text-primary hover:bg-primary/20 border-primary/20 px-3 py-1 mb-6 text-sm">
-                #1 Tuition Marketplace
-              </Badge>
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-foreground leading-[1.1] mb-6">
-                Find the Perfect <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Tutor</span> for Your Success
+              <div className="inline-flex items-center gap-2 bg-primary/20 border border-primary/30 text-primary-foreground px-4 py-1.5 rounded-full text-sm font-bold mb-8 backdrop-blur-md">
+                <Zap className="w-4 h-4 fill-primary text-primary" /> #1 Tutor Marketplace in India
+              </div>
+              <h1 className="text-5xl md:text-7xl font-display font-black text-white mb-8 leading-[1.1] tracking-tight">
+                Find the Perfect <span className="gradient-text italic">Tutor</span> For Your Child
               </h1>
-              <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed">
-                Connect with verified, high-quality tutors in your area or online. Whether you need help with Math, Science, or Test Prep, we've got you covered.
+              <p className="text-xl text-slate-300 mb-10 leading-relaxed max-w-xl font-medium">
+                Connect directly with verified home tutors and online educators. Transparent pricing, zero commissions, and instant matching.
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-5">
                 <Link href="/posts">
-                  <Button size="lg" className="w-full sm:w-auto h-14 px-8 text-base rounded-2xl shadow-xl shadow-primary/25 hover:-translate-y-1 transition-all duration-300">
-                    <Search className="mr-2 w-5 h-5" /> Browse Tuitions
+                  <Button className="h-16 px-10 rounded-2xl bg-primary hover:bg-primary/90 text-white font-black text-lg shadow-2xl shadow-primary/20 flex items-center gap-3 group transition-all">
+                    Find a Tutor <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
-                <Link href="/register?role=tutor">
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto h-14 px-8 text-base rounded-2xl bg-white/50 backdrop-blur-sm border-2 border-border hover:border-primary/50 hover:bg-white transition-all duration-300">
-                    <GraduationCap className="mr-2 w-5 h-5" /> Become a Tutor
-                  </Button>
-                </Link>
+                {!isTutor && (
+                  <Link href="/register?role=tutor">
+                    <Button className="h-16 px-10 rounded-2xl bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-xl font-black text-lg transition-all">
+                      Register as Tutor
+                    </Button>
+                  </Link>
+                )}
               </div>
-              
-              <div className="mt-10 flex items-center gap-6 text-sm text-muted-foreground font-medium">
-                <div className="flex items-center gap-2"><ShieldCheck className="w-5 h-5 text-emerald-500"/> Verified Profiles</div>
-                <div className="flex items-center gap-2"><Star className="w-5 h-5 text-accent"/> Quality Assured</div>
+
+              {/* Trust Badges */}
+              <div className="mt-12 flex items-center gap-8 opacity-70">
+                <div className="flex items-center gap-2 text-white font-bold tracking-tighter uppercase text-[10px]">
+                  <ShieldCheck className="w-4 h-4 text-emerald-400" /> Verified Profiles
+                </div>
+                <div className="flex items-center gap-2 text-white font-bold tracking-tighter uppercase text-[10px]">
+                  <Star className="w-4 h-4 text-amber-400 fill-amber-400" /> 4.9/5 Avg Rating
+                </div>
+                <div className="flex items-center gap-2 text-white font-bold tracking-tighter uppercase text-[10px]">
+                  <Users className="w-4 h-4 text-indigo-400" /> 10k+ Registered
+                </div>
               </div>
             </motion.div>
-            
+
+            {/* Floating Visuals (Desktop) */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="relative lg:h-[600px] flex items-center justify-center hidden md:flex"
+              transition={{ delay: 0.2 }}
+              className="relative hidden lg:block"
             >
-              <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-accent/20 rounded-[3rem] blur-3xl" />
-              <img 
-                src={`${import.meta.env.BASE_URL}images/tutor-illustration.png`}
-                alt="Tutor helping student"
-                className="relative z-10 w-full max-w-[500px] object-contain drop-shadow-2xl hover:-translate-y-2 transition-transform duration-500"
-              />
-              
-              {/* Floating Cards */}
-              <Card className="absolute top-10 -left-10 p-4 shadow-xl glass-panel animate-bounce z-20" style={{ animationDuration: '3s' }}>
-                <div className="flex items-center gap-3">
-                  <div className="bg-emerald-100 p-2 rounded-full"><Star className="w-5 h-5 text-emerald-600 fill-emerald-600"/></div>
-                  <div>
-                    <p className="font-bold text-sm">4.9/5 Average</p>
-                    <p className="text-xs text-muted-foreground">Tutor Ratings</p>
+              <div className="relative z-10 bg-white/5 p-4 rounded-[40px] border border-white/10 backdrop-blur-sm">
+                <img 
+                  src="/images/home_hero.png" 
+                  alt="Students Learning" 
+                  className="rounded-[32px] w-full shadow-2xl"
+                />
+              </div>
+              <motion.div 
+                animate={{ y: [0, -15, 0] }}
+                transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                className="absolute -top-10 -left-10 glass-premium p-6 rounded-3xl z-20 shadow-xl border border-white/40"
+              >
+                  <div className="flex items-center gap-4">
+                    <div className="bg-amber-100 p-2 rounded-xl"><Star className="w-6 h-6 text-amber-500 fill-amber-500" /></div>
+                    <div>
+                      <p className="font-black text-slate-900 leading-tight">4.9/5</p>
+                      <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Top Tutors</p>
+                    </div>
                   </div>
-                </div>
-              </Card>
+              </motion.div>
+              <motion.div 
+                animate={{ y: [0, 15, 0] }}
+                transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
+                className="absolute -bottom-10 -right-10 glass-premium p-6 rounded-3xl z-20 shadow-xl border border-white/40"
+              >
+                  <div className="flex items-center gap-4">
+                    <div className="bg-primary/10 p-2 rounded-xl"><TrendingUp className="w-6 h-6 text-primary" /></div>
+                    <div>
+                      <p className="font-black text-slate-900 leading-tight">8,500+</p>
+                      <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Success Matches</p>
+                    </div>
+                  </div>
+              </motion.div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* How it Works Section */}
-      <section className="py-24 bg-white relative">
-        <img 
-          src={`${import.meta.env.BASE_URL}images/pattern-dots.png`} 
-          className="absolute inset-0 w-full h-full object-cover opacity-[0.03] pointer-events-none" 
-          alt="" 
-        />
-        <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">How TutorConnect Works</h2>
-            <p className="text-muted-foreground text-lg">A simple, transparent process to find the perfect educational match.</p>
+      {/* Value Grid */}
+      <div className="py-16 bg-white container mx-auto px-6 relative z-30 -mt-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <FeatureBox 
+              icon={Search} 
+              title="Smart Matching" 
+              desc="Our algorithm finds tutors based on subjects, class, and proximity instantly."
+              color="bg-indigo-600"
+            />
+            <FeatureBox 
+              icon={Zap} 
+              title="₹49 Direct Unlock" 
+              desc="No complex subscriptions needed. Unlock any parent contact detail for just ₹49."
+              color="bg-amber-500"
+            />
+            <FeatureBox 
+              icon={ShieldCheck} 
+              title="Anti-Fraud Tech" 
+              desc="Advanced device fingerprinting ensures only genuine tutors and requirements."
+              color="bg-emerald-600"
+            />
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {[
-              { icon: BookOpen, title: "1. Post a Requirement", desc: "Parents post their specific tuition needs, detailing subjects, class, and budget." },
-              { icon: Search, title: "2. Browse & Apply", desc: "Qualified tutors browse available posts and apply to those matching their expertise." },
-              { icon: Zap, title: "3. Connect & Start", desc: "Tutors unlock contact details, connect with parents, and start the learning journey." }
-            ].map((step, i) => (
-              <motion.div 
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.2 }}
-                className="bg-slate-50 border border-border/50 rounded-3xl p-8 text-center hover:shadow-xl hover:border-primary/20 transition-all duration-300"
-              >
-                <div className="w-16 h-16 mx-auto bg-white shadow-md rounded-2xl flex items-center justify-center mb-6 text-primary">
-                  <step.icon className="w-8 h-8" />
+      </div>
+
+      {/* For Parents Section */}
+      <section className="py-24 bg-white">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-col lg:flex-row items-center gap-20">
+            <div className="lg:w-1/2">
+              <div className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest mb-6 inline-block">For Parents</div>
+              <h2 className="text-4xl md:text-5xl font-display font-black text-slate-900 mb-8 leading-tight">
+                Hire Top Tutors <br /><span className="text-indigo-600">Without the Middleman</span>
+              </h2>
+              <ul className="space-y-6 mb-10">
+                <BenefitItem text="Post requirements for free and get tutor proposals within minutes." />
+                <BenefitItem text="Chat directly with tutors before deciding." />
+                <BenefitItem text="Verify qualifications and reviews on teacher profiles." />
+                <BenefitItem text="No commission taken from the student's monthly fee." />
+              </ul>
+              <Link href="/posts">
+                <Button className="h-14 px-8 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold shadow-lg flex items-center gap-2">
+                  Post Requirement Now <ChevronRight className="w-4 h-4" />
+                </Button>
+              </Link>
+            </div>
+            <div className="lg:w-1/2">
+              <div className="bg-slate-50 rounded-[40px] p-2 border border-slate-100 group">
+                <div className="bg-white border border-slate-200 p-8 md:p-10 rounded-[38px] shadow-2xl shadow-indigo-100/50 group-hover:shadow-indigo-200/50 transition-all duration-500">
+                   <div className="flex items-center justify-between mb-8">
+                      <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-100">
+                          <Users className="w-7 h-7" />
+                        </div>
+                        <div>
+                          <p className="font-black text-slate-900 leading-tight text-lg">Platform Quality</p>
+                          <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Trust Dashboard</p>
+                        </div>
+                      </div>
+                      <div className="bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 border border-emerald-100 shadow-sm shadow-emerald-100">
+                        <ShieldCheck className="w-3.5 h-3.5 fill-emerald-500 text-white" /> Verified
+                      </div>
+                   </div>
+
+                   <div className="space-y-8">
+                      {/* Metric 1 */}
+                      <div className="space-y-3">
+                         <div className="flex justify-between items-end">
+                            <span className="text-sm font-bold text-slate-700 flex items-center gap-2">
+                              <GraduationCap className="w-4 h-4 text-indigo-500" /> Tutor Quality Index
+                            </span>
+                            <span className="text-2xl font-black text-indigo-600">96%</span>
+                         </div>
+                         <div className="h-4 bg-slate-100 rounded-2xl overflow-hidden p-1 shadow-inner">
+                            <motion.div 
+                              initial={{ width: 0 }}
+                              whileInView={{ width: "96%" }}
+                              transition={{ duration: 1.5, ease: "easeOut" }}
+                              viewport={{ once: true }}
+                              className="h-full bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-xl relative shadow-lg shadow-indigo-200"
+                            >
+                               <div className="absolute top-0 right-1 bottom-0 w-1 bg-white/30 rounded-full" />
+                            </motion.div>
+                         </div>
+                      </div>
+
+                      {/* Metric 2 */}
+                      <div className="space-y-3">
+                         <div className="flex justify-between items-end">
+                            <span className="text-sm font-bold text-slate-700 flex items-center gap-2">
+                              <TrendingUp className="w-4 h-4 text-emerald-500" /> Match Success Rate
+                            </span>
+                            <span className="text-2xl font-black text-emerald-600">92%</span>
+                         </div>
+                         <div className="h-4 bg-slate-100 rounded-2xl overflow-hidden p-1 shadow-inner">
+                            <motion.div 
+                              initial={{ width: 0 }}
+                              whileInView={{ width: "92%" }}
+                              transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
+                              viewport={{ once: true }}
+                              className="h-full bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl relative shadow-lg shadow-emerald-200"
+                            >
+                               <div className="absolute top-0 right-1 bottom-0 w-1 bg-white/30 rounded-full" />
+                            </motion.div>
+                         </div>
+                      </div>
+                   </div>
+
+                   <div className="mt-10 p-4 bg-slate-50/50 rounded-2xl border border-dashed border-slate-200 text-center">
+                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-relaxed">
+                        Data reflects active parent-tutor <br /> interactions as of Q1 2024
+                      </p>
+                   </div>
                 </div>
-                <h3 className="text-xl font-bold mb-3 text-slate-800">{step.title}</h3>
-                <p className="text-slate-600 leading-relaxed">{step.desc}</p>
-              </motion.div>
-            ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
-      
-      {/* CTA Section */}
-      <section className="py-24 bg-primary relative overflow-hidden">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff10_1px,transparent_1px),linear-gradient(to_bottom,#ffffff10_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
-        <div className="container mx-auto px-4 md:px-6 relative z-10 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Ready to accelerate learning?</h2>
-          <p className="text-primary-foreground/80 text-xl max-w-2xl mx-auto mb-10">
-            Join thousands of students and tutors already using TutorConnect to achieve their educational goals.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/register?role=parent">
-              <Button size="lg" className="h-14 px-8 text-base font-bold bg-white text-primary hover:bg-white/90 rounded-xl w-full sm:w-auto shadow-xl">
-                Post a Tuition
-              </Button>
-            </Link>
-            <Link href="/register?role=tutor">
-              <Button size="lg" className="h-14 px-8 text-base font-bold bg-accent text-accent-foreground hover:bg-accent/90 rounded-xl w-full sm:w-auto shadow-xl">
-                Start Tutoring
-              </Button>
-            </Link>
+
+      {/* For Tutors Section */}
+      <section className="py-24 bg-slate-900 overflow-hidden relative">
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/10 blur-[150px] -z-0" />
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="flex flex-col lg:flex-row-reverse items-center gap-20">
+            <div className="lg:w-1/2">
+              <div className="bg-primary/20 text-primary-foreground px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest mb-6 inline-block">For Tutors</div>
+              <h2 className="text-4xl md:text-5xl font-display font-black text-white mb-8 leading-tight">
+                Grow Your Reputation <br /><span className="text-primary">Independently</span>
+              </h2>
+              <ul className="space-y-6 mb-10">
+                <BenefitItem variant="dark" text="Unlock student contacts for just ₹49 - no contracts." />
+                <BenefitItem variant="dark" text="Weekly and Monthly unlimited plans available." />
+                <BenefitItem variant="dark" text="Showcase your experience with a professional digital profile." />
+                <BenefitItem variant="dark" text="Direct payment from parents - we take 0% commission." />
+              </ul>
+              <Link href="/register">
+                <Button className="h-14 px-8 rounded-2xl bg-primary hover:bg-primary/90 text-white font-bold shadow-lg flex items-center gap-2">
+                  Apply for Tuition <ChevronRight className="w-4 h-4" />
+                </Button>
+              </Link>
+            </div>
+            <div className="lg:w-1/2">
+               <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 p-10 rounded-[40px] shadow-2xl group flex flex-col hover:scale-[1.02] transition-transform">
+                  <div className="flex items-center gap-4 mb-8">
+                    <div className="w-16 h-16 rounded-3xl bg-primary/20 flex items-center justify-center border border-primary/20"><GraduationCap className="w-8 h-8 text-primary" /></div>
+                    <div>
+                      <h4 className="text-white font-bold text-xl uppercase tracking-tighter">Verified Tutor</h4>
+                      <p className="text-slate-400 text-sm">Profile ID: TS-592</p>
+                    </div>
+                  </div>
+                  <div className="space-y-4 mb-8">
+                     <div className="h-1 bg-slate-700 w-full rounded" />
+                     <div className="h-1 bg-slate-700 w-2/3 rounded" />
+                  </div>
+                  <div className="flex justify-between items-center text-white">
+                      <div className="text-center">
+                        <p className="text-xs text-slate-500 uppercase font-black tracking-widest mb-1">Total Leads</p>
+                        <p className="text-2xl font-black">204</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs text-slate-500 uppercase font-black tracking-widest mb-1">Active Fees</p>
+                        <p className="text-2xl font-black">₹25k+</p>
+                      </div>
+                  </div>
+               </div>
+            </div>
           </div>
         </div>
       </section>
+
+      {/* Trust Section */}
+      <section className="py-24 bg-white">
+        <div className="container mx-auto px-6 text-center max-w-4xl">
+           <Award className="w-16 h-16 text-primary mx-auto mb-8" />
+           <h2 className="text-4xl md:text-5xl font-display font-black text-slate-900 mb-8">Building Trust in Education</h2>
+           <p className="text-slate-500 text-lg leading-relaxed mb-12">
+             TutorSphere is built on the foundation of transparency. We believe parents and teachers are the best decision-makers for a student's future. Our role is strictly to provide the best platform for that connection to happen safely and securely.
+           </p>
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <StatItem icon={ShieldCheck} label="Verified" value="10,000+" />
+              <StatItem icon={MessageSquare} label="Reviews" value="4,500+" />
+              <StatItem icon={Users} label="Daily Matches" value="800+" />
+           </div>
+        </div>
+      </section>
+
+      {/* Footer CTA */}
+      <section className="py-24 bg-primary text-white text-center rounded-t-[60px] md:rounded-t-[100px]">
+         <div className="container mx-auto px-6 max-w-2xl">
+            <h2 className="text-4xl md:text-6xl font-display font-black mb-8 leading-tight">Start Your Journey Today</h2>
+            <p className="text-primary-foreground/80 text-lg mb-12 font-medium">Join thousands of parents and tutors who have found their perfect match.</p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/posts"><Button className="h-16 px-10 rounded-2xl bg-white text-primary hover:bg-slate-100 font-bold text-lg shadow-xl">Hire a Tutor</Button></Link>
+              <Link href="/register"><Button className="h-16 px-10 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-lg shadow-xl">Join the Community</Button></Link>
+            </div>
+         </div>
+      </section>
+    </div>
+  );
+}
+
+function FeatureBox({ icon: Icon, title, desc, color }: { icon: any, title: string, desc: string, color: string }) {
+  return (
+    <div className="bg-white p-10 rounded-[32px] border border-slate-100 shadow-xl shadow-slate-100/50 hover:border-primary/20 transition-all group flex flex-col items-center text-center">
+      <div className={`w-14 h-14 rounded-2xl ${color} flex items-center justify-center text-white mb-6 group-hover:scale-110 transition-transform`}>
+        <Icon className="w-7 h-7" />
+      </div>
+      <h3 className="text-xl font-black text-slate-900 mb-2 uppercase tracking-tighter">{title}</h3>
+      <p className="text-slate-500 leading-relaxed text-sm font-medium">{desc}</p>
+    </div>
+  );
+}
+
+function BenefitItem({ text, variant = "light" }: { text: string, variant?: "light" | "dark" }) {
+  return (
+    <li className="flex items-start gap-4">
+      <div className={`w-6 h-6 rounded-full ${variant === "light" ? "bg-indigo-100 text-indigo-500" : "bg-primary/20 text-primary"} flex items-center justify-center shrink-0 mt-0.5`}>
+        <CheckCircle2 className="w-4 h-4" />
+      </div>
+      <span className={`${variant === "light" ? "text-slate-600" : "text-slate-300"} font-medium`}>{text}</span>
+    </li>
+  );
+}
+
+function StatItem({ icon: Icon, label, value }: { icon: any, label: string, value: string }) {
+  return (
+    <div className="p-10 rounded-[32px] bg-slate-50 border border-slate-100 hover:border-primary/20 transition-all">
+      <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-100 shadow-sm"><Icon className="w-6 h-6 text-primary" /></div>
+      <p className="text-3xl font-display font-black text-slate-900 mb-1">{value}</p>
+      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{label}</p>
     </div>
   );
 }

@@ -26,7 +26,7 @@ const faqs = [
   },
   {
     q: "Can I get a refund?",
-    a: "Refund requests for contact unlock payments can be raised within 24 hours if the contact details were incorrect. Email us at support@tutorconnect.com.",
+    a: "Refund requests for contact unlock payments can be raised within 24 hours if the contact details were incorrect. Email us at tutorsphereofficial@gmail.com.",
   },
 ];
 
@@ -72,7 +72,7 @@ export default function Contact() {
                 <div className="bg-primary/10 p-3 rounded-xl"><Mail className="w-5 h-5 text-primary" /></div>
                 <div>
                   <p className="font-semibold text-slate-800 mb-1">Email Support</p>
-                  <p className="text-sm text-slate-500">support@tutorconnect.com</p>
+                  <p className="text-sm text-slate-500">tutorsphereofficial@gmail.com</p>
                   <p className="text-xs text-slate-400 mt-1">Response within 24 hours</p>
                 </div>
               </CardContent>
@@ -82,7 +82,7 @@ export default function Contact() {
                 <div className="bg-primary/10 p-3 rounded-xl"><Phone className="w-5 h-5 text-primary" /></div>
                 <div>
                   <p className="font-semibold text-slate-800 mb-1">Phone Support</p>
-                  <p className="text-sm text-slate-500">+91 98765 43210</p>
+                  <p className="text-sm text-slate-500">+91 82870 6*****</p>
                   <p className="text-xs text-slate-400 mt-1">Mon–Sat, 9 AM – 7 PM IST</p>
                 </div>
               </CardContent>

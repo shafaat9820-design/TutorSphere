@@ -14,6 +14,7 @@ import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
 import Home from "@/pages/Home";
 import Login from "@/pages/auth/Login";
 import Register from "@/pages/auth/Register";
+import ForgotPassword from "@/pages/auth/ForgotPassword";
 import PostList from "@/pages/posts/PostList";
 import PostDetail from "@/pages/posts/PostDetail";
 import ParentDashboard from "@/pages/parent/Dashboard";
@@ -22,12 +23,16 @@ import TutorDashboard from "@/pages/tutor/Dashboard";
 import AdminDashboard from "@/pages/admin/Dashboard";
 import AdminUsers from "@/pages/admin/Users";
 import AdminPosts from "@/pages/admin/Posts";
+import AdminPayments from "@/pages/admin/Payments";
+import AdminReports from "@/pages/admin/Reports";
 import AdminAnalytics from "@/pages/admin/Analytics";
+import Pricing from "@/pages/Pricing";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
 import NotFound from "@/pages/not-found";
+import ProfilePage from "@/pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -48,8 +53,10 @@ function Router() {
       <Route path="/">
         <StandardLayout><Home /></StandardLayout>
       </Route>
+      <Route path="/pricing" component={Pricing} />
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
+      <Route path="/forgot-password" component={ForgotPassword} />
       
       <Route path="/posts">
         <StandardLayout><PostList /></StandardLayout>
@@ -66,6 +73,12 @@ function Router() {
       <Route path="/parent/posts/new">
         <ProtectedRoute allowedRoles={["parent"]}>
           <CreatePost />
+        </ProtectedRoute>
+      </Route>
+
+      <Route path="/profile">
+        <ProtectedRoute allowedRoles={["parent","tutor","admin"]}>
+          <ProfilePage />
         </ProtectedRoute>
       </Route>
 
@@ -108,6 +121,16 @@ function Router() {
       <Route path="/admin/posts">
         <ProtectedRoute allowedRoles={["admin"]}>
           <AdminLayout><AdminPosts /></AdminLayout>
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/payments">
+        <ProtectedRoute allowedRoles={["admin"]}>
+          <AdminLayout><AdminPayments /></AdminLayout>
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/reports">
+        <ProtectedRoute allowedRoles={["admin"]}>
+          <AdminLayout><AdminReports /></AdminLayout>
         </ProtectedRoute>
       </Route>
       <Route path="/admin/analytics">

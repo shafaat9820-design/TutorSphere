@@ -32,6 +32,7 @@ export const tuitionPostsTable = pgTable("tuition_posts", {
   duration: numeric("duration", { precision: 4, scale: 1 }).notNull(),
   daysPerWeek: integer("days_per_week").notNull(),
   monthlyFee: integer("monthly_fee").notNull(),
+  state: text("state"),
   description: text("description"),
   contactPhone: text("contact_phone").notNull(),
   featured: boolean("featured").notNull().default(false),

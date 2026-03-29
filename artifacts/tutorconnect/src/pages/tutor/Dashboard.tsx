@@ -4,117 +4,182 @@ import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 import { format } from "date-fns";
-import { Briefcase, IndianRupee, MapPin, CheckCircle2, Clock } from "lucide-react";
+import { Briefcase, IndianRupee, CheckCircle2, Clock, LayoutDashboard, Sparkles} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 
 export default function TutorDashboard() {
-  const { getAuthHeaders } = useAuth();
-  
+  const { getAuthHeaders, user } = useAuth();
+
   const { data: applications, isLoading: isLoadingApps } = useGetMyApplications({
-    request: { headers: getAuthHeaders() }
+    request: { headers: getAuthHeaders() },
   });
 
   const { data: payments, isLoading: isLoadingPayments } = useGetMyPayments({
-    request: { headers: getAuthHeaders() }
+    request: { headers: getAuthHeaders() },
   });
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="flex flex-col min-h-screen bg-slate-50/60">
       <Navbar />
-      <div className="bg-slate-900 text-white pt-10 pb-24">
-        <div className="container mx-auto px-4 max-w-5xl">
-          <h1 className="text-3xl md:text-4xl font-display font-bold mb-2">Tutor Workspace</h1>
-          <p className="text-slate-400">Manage your applications and unlocked contacts.</p>
+
+      {/* Hero band */}
+      <div className="relative bg-gradient-to-br from-[#0f0618] to-[#0d1540] text-white pt-12 pb-24 overflow-hidden">
+        <div className="absolute inset-0 bg-dot-pattern opacity-25" />
+        <div className="absolute top-0 left-1/3 w-72 h-72 bg-indigo-600/15 rounded-full blur-[80px]" />
+        <div className="container mx-auto px-4 max-w-5xl relative z-10">
+          <div className="flex items-center gap-2 text-violet-300 text-sm font-medium mb-3">
+            <LayoutDashboard className="w-4 h-4" /> Tutor Workspace
+          </div>
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-1">
+            Welcome back, {user?.name?.split(" ")[0] || "Tutor"} 👋
+          </h1>
+          <div className="flex flex-wrap items-center gap-3 mt-4">
+            <p className="text-slate-400">Track your applications and unlocked parent contacts.</p>
+            {(user as any)?.planType && (user as any).planType !== 'none' && (user as any).planExpiry && new Date((user as any).planExpiry) > new Date() && (
+              <Badge className="bg-violet-600 text-white border-violet-400 px-3 py-1 animate-pulse">
+                <Sparkles className="w-3 h-3 mr-1 fill-white" />
+                {(user as any).planType.toUpperCase()} PLAN ACTIVE
+              </Badge>
+            )}
+          </div>
+          {(user as any)?.planExpiry && new Date((user as any).planExpiry) > new Date() && (
+            <p className="text-xs text-violet-300 mt-2 font-medium">
+              Unlimited access until {format(new Date((user as any).planExpiry), 'MMMM d, yyyy')}
+            </p>
+          )}
         </div>
       </div>
 
-      <main className="container mx-auto px-4 max-w-5xl -mt-12 relative z-10 pb-20">
-        <Card className="border-0 shadow-xl shadow-slate-200/50 rounded-2xl overflow-hidden bg-white/80 backdrop-blur-xl">
-          <CardContent className="p-2 md:p-6">
+      {/* Tabs panel */}
+      <main className="container mx-auto px-4 max-w-5xl -mt-12 relative z-10 pb-16 flex-1">
+        <Card className="border-0 shadow-xl shadow-slate-200/60 rounded-2xl overflow-hidden bg-white/95 backdrop-blur-xl">
+          <CardContent className="p-4 md:p-6">
             <Tabs defaultValue="applications" className="w-full">
-              <TabsList className="w-full justify-start border-b border-border bg-transparent h-auto p-0 rounded-none mb-6 overflow-x-auto">
-                <TabsTrigger 
-                  value="applications" 
-                  className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-6 py-3 text-base font-semibold data-[state=active]:text-primary"
+              <TabsList className="w-full justify-start border-b border-slate-100 bg-transparent h-auto p-0 rounded-none mb-6 overflow-x-auto">
+                <TabsTrigger
+                  value="applications"
+                  className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-violet-600 data-[state=active]:text-violet-700 rounded-none px-5 py-3 text-sm font-semibold text-slate-500"
                 >
                   <Briefcase className="w-4 h-4 mr-2" /> My Applications
+                  {applications && applications.length > 0 && (
+                    <span className="ml-2 bg-violet-100 text-violet-700 text-xs rounded-full px-2 py-0.5 font-bold">
+                      {applications.length}
+                    </span>
+                  )}
                 </TabsTrigger>
-                <TabsTrigger 
-                  value="payments" 
-                  className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-6 py-3 text-base font-semibold data-[state=active]:text-primary"
+                <TabsTrigger
+                  value="payments"
+                  className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-violet-600 data-[state=active]:text-violet-700 rounded-none px-5 py-3 text-sm font-semibold text-slate-500"
                 >
                   <IndianRupee className="w-4 h-4 mr-2" /> Unlocked Contacts
                 </TabsTrigger>
               </TabsList>
 
+              {/* Applications */}
               <TabsContent value="applications" className="outline-none">
-                {isLoadingApps ? <p className="p-8 text-center text-slate-500">Loading...</p> : 
-                 applications?.length === 0 ? (
+                {isLoadingApps ? (
+                  <div className="grid gap-3">
+                    {[...Array(3)].map((_, i) => <div key={i} className="h-20 rounded-xl bg-slate-100 animate-pulse" />)}
+                  </div>
+                ) : applications?.length === 0 ? (
                   <div className="text-center py-16">
-                    <Briefcase className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                    <p className="text-slate-600 font-medium mb-4">You haven't applied to any tuitions yet.</p>
-                    <Link href="/posts" className="text-primary font-bold hover:underline">Browse Tuitions</Link>
+                    <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <Briefcase className="w-7 h-7 text-slate-400" />
+                    </div>
+                    <p className="text-slate-600 font-semibold mb-1">No applications yet</p>
+                    <p className="text-slate-400 text-sm mb-5">Start applying to tuitions that match your expertise.</p>
+                    <Link href="/posts" className="text-violet-600 font-bold hover:underline text-sm">
+                      Browse Tuitions →
+                    </Link>
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    {applications?.map(app => (
-                      <Card key={app.id} className="border border-border/60 shadow-sm rounded-xl overflow-hidden hover:border-primary/30 transition-colors">
-                        <div className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                          <div>
-                            <p className="text-xs font-bold text-slate-400 mb-1 flex items-center gap-1">
-                              <Clock className="w-3 h-3" /> Applied on {format(new Date(app.appliedAt), 'MMM d, yyyy')}
-                            </p>
-                            <Link href={`/posts/${app.postId}`}>
-                              <h4 className="text-lg font-bold text-slate-800 hover:text-primary transition-colors cursor-pointer">
-                                {app.postTitle || `Post #${app.postId}`}
-                              </h4>
-                            </Link>
+                  <div className="space-y-3">
+                    {applications?.map((app, i) => (
+                      <motion.div
+                        key={app.id}
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.06, duration: 0.35 }}
+                      >
+                        <Card className="border border-slate-100 shadow-sm rounded-xl hover:border-violet-200 hover:shadow-md transition-all duration-200">
+                          <div className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div>
+                              <p className="text-xs font-semibold text-slate-400 mb-1 flex items-center gap-1">
+                                <Clock className="w-3 h-3" />
+                                Applied {format(new Date(app.appliedAt.endsWith('Z') || app.appliedAt.includes('+') ? app.appliedAt : app.appliedAt + 'Z'), 'MMM d, yyyy')}
+                              </p>
+                              <Link href={`/posts/${app.postId}`}>
+                                <h4 className="text-base font-bold text-slate-800 hover:text-violet-700 transition-colors cursor-pointer capitalize">
+                                  {app.postTitle || `Post #${app.postId}`}
+                                </h4>
+                              </Link>
+                            </div>
+                            <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 shrink-0 font-semibold text-xs">
+                              <CheckCircle2 className="w-3 h-3 mr-1" /> Applied
+                            </Badge>
                           </div>
-                          <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 border-emerald-200 self-start md:self-center">
-                            Application Sent
-                          </Badge>
-                        </div>
-                      </Card>
+                        </Card>
+                      </motion.div>
                     ))}
                   </div>
                 )}
               </TabsContent>
 
+              {/* Payments */}
               <TabsContent value="payments" className="outline-none">
-                 {isLoadingPayments ? <p className="p-8 text-center text-slate-500">Loading...</p> : 
-                 payments?.length === 0 ? (
+                {isLoadingPayments ? (
+                  <div className="grid gap-3">
+                    {[...Array(2)].map((_, i) => <div key={i} className="h-20 rounded-xl bg-slate-100 animate-pulse" />)}
+                  </div>
+                ) : payments?.length === 0 ? (
                   <div className="text-center py-16">
-                    <CheckCircle2 className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                    <p className="text-slate-600 font-medium mb-4">You haven't unlocked any contacts yet.</p>
-                    <Link href="/posts" className="text-primary font-bold hover:underline">Find Tuitions</Link>
+                    <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <Sparkles className="w-7 h-7 text-slate-400" />
+                    </div>
+                    <p className="text-slate-600 font-semibold mb-1">No contacts unlocked yet</p>
+                    <p className="text-slate-400 text-sm mb-5">Pay a small fee to unlock a parent's contact information.</p>
+                    <Link href="/posts" className="text-violet-600 font-bold hover:underline text-sm">
+                      Find Tuitions →
+                    </Link>
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    {payments?.map(payment => (
-                      <Card key={payment.id} className="border border-border/60 shadow-sm rounded-xl overflow-hidden">
-                        <div className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                          <div>
-                            <div className="flex items-center gap-2 mb-1">
-                              {payment.paymentStatus === "success" ? (
-                                <Badge className="bg-emerald-500 hover:bg-emerald-600">Success</Badge>
-                              ) : (
-                                <Badge variant="destructive">{payment.paymentStatus}</Badge>
-                              )}
-                              <span className="text-xs text-slate-400 font-medium">{format(new Date(payment.createdAt), 'MMM d, yyyy')}</span>
+                  <div className="space-y-3">
+                    {payments?.map((payment, i) => (
+                      <motion.div
+                        key={payment.id}
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.06, duration: 0.35 }}
+                      >
+                        <Card className="border border-slate-100 shadow-sm rounded-xl hover:border-violet-200 hover:shadow-md transition-all duration-200">
+                          <div className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div>
+                              <div className="flex items-center gap-2 mb-1">
+                                {payment.paymentStatus === "success" ? (
+                                  <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 text-xs font-bold">✓ Success</Badge>
+                                ) : (
+                                  <Badge variant="destructive" className="text-xs">{payment.paymentStatus}</Badge>
+                                )}
+                                <span className="text-xs text-slate-400">
+                                  {format(new Date(payment.createdAt.endsWith('Z') || payment.createdAt.includes('+') ? payment.createdAt : payment.createdAt + 'Z'), 'MMM d, yyyy')}
+                                </span>
+                              </div>
+                              <Link href={`/posts/${payment.postId}`}>
+                                <h4 className="text-base font-bold text-slate-800 hover:text-violet-700 transition-colors cursor-pointer capitalize">
+                                  {payment.postTitle || `Post #${payment.postId}`}
+                                </h4>
+                              </Link>
                             </div>
-                            <Link href={`/posts/${payment.postId}`}>
-                              <h4 className="text-lg font-bold text-slate-800 hover:text-primary transition-colors cursor-pointer">
-                                {payment.postTitle || `Post #${payment.postId}`}
-                              </h4>
-                            </Link>
+                            <div className="text-right">
+                              <p className="text-xs text-slate-400 font-medium">Amount Paid</p>
+                              <p className="text-xl font-extrabold text-slate-800">₹{(payment.amount / 100).toLocaleString("en-IN")}</p>
+                            </div>
                           </div>
-                          <div className="text-right">
-                            <p className="text-sm font-medium text-slate-500">Amount Paid</p>
-                            <p className="text-xl font-bold text-slate-800">₹{(payment.amount / 100).toLocaleString('en-IN')}</p>
-                          </div>
-                        </div>
-                      </Card>
+                        </Card>
+                      </motion.div>
                     ))}
                   </div>
                 )}
@@ -123,6 +188,8 @@ export default function TutorDashboard() {
           </CardContent>
         </Card>
       </main>
+
+      <Footer />
     </div>
   );
 }

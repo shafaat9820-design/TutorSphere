@@ -22,5 +22,6 @@ export interface UpdatePostRequest {
   monthlyFee?: number;
   description?: string | null;
   contactPhone?: string;
+  state?: string;
   featured?: boolean;
 }

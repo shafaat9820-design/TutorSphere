@@ -21,6 +21,7 @@ export interface TuitionPost {
   duration: number;
   daysPerWeek: number;
   monthlyFee: number;
+  state: string;
   description?: string | null;
   featured: boolean;
   createdById: number;

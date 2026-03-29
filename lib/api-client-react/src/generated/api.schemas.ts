@@ -31,6 +31,7 @@ export interface RegisterRequest {
   /** @minLength 6 */
   password: string;
   phone: string;
+  otpCode: string;
   role: RegisterRequestRole;
 }
 
@@ -48,12 +49,32 @@ export const UserProfileRole = {
   parent: "parent",
 } as const;
 
+export type UserProfilePlanType =
+  (typeof UserProfilePlanType)[keyof typeof UserProfilePlanType];
+
+export const UserProfilePlanType = {
+  none: "none",
+  weekly: "weekly",
+  monthly: "monthly",
+} as const;
+
 export interface UserProfile {
   id: number;
   name: string;
   email: string;
   phone?: string | null;
   role: UserProfileRole;
+  freeContactUsed: boolean;
+  freePostUsedAt?: string | null;
+  contactsUnlockedCount: number;
+  parentPlanExpiry?: string | null;
+  activePostCount: number;
+  isVerified: boolean;
+  deviceId?: string | null;
+  lastIP?: string | null;
+  isSuspicious: boolean;
+  planType: UserProfilePlanType;
+  planExpiry?: string | null;
   createdAt: string;
 }
 
@@ -101,6 +122,7 @@ export interface CreatePostRequest {
   monthlyFee: number;
   description?: string | null;
   contactPhone: string;
+  state: string;
 }
 
 export type UpdatePostRequestGenderPreference =
@@ -142,6 +164,7 @@ export interface UpdatePostRequest {
   monthlyFee?: number;
   description?: string | null;
   contactPhone?: string;
+  state?: string;
   featured?: boolean;
 }
 
@@ -183,6 +206,7 @@ export interface TuitionPost {
   duration: number;
   daysPerWeek: number;
   monthlyFee: number;
+  state: string;
   description?: string | null;
   featured: boolean;
   createdById: number;

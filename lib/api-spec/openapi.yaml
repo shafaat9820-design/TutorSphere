@@ -768,6 +768,8 @@ components:
           minLength: 6
         phone:
           type: string
+        otpCode:
+          type: string
         role:
           type: string
           enum: [tutor, parent]
@@ -776,6 +778,7 @@ components:
         - email
         - password
         - phone
+        - otpCode
         - role
 
     LoginRequest:
@@ -816,6 +819,37 @@ components:
         role:
           type: string
           enum: [admin, tutor, parent]
+        freeContactUsed:
+          type: boolean
+        freePostUsedAt:
+          type: string
+          format: date-time
+          nullable: true
+        contactsUnlockedCount:
+          type: integer
+        parentPlanExpiry:
+          type: string
+          format: date-time
+          nullable: true
+        activePostCount:
+          type: integer
+        isVerified:
+          type: boolean
+        deviceId:
+          type: string
+          nullable: true
+        lastIP:
+          type: string
+          nullable: true
+        isSuspicious:
+          type: boolean
+        planType:
+          type: string
+          enum: [none, weekly, monthly]
+        planExpiry:
+          type: string
+          format: date-time
+          nullable: true
         createdAt:
           type: string
           format: date-time
@@ -824,6 +858,12 @@ components:
         - name
         - email
         - role
+        - freeContactUsed
+        - contactsUnlockedCount
+        - activePostCount
+        - isVerified
+        - isSuspicious
+        - planType
         - createdAt
 
     CreatePostRequest:
@@ -858,6 +898,8 @@ components:
           nullable: true
         contactPhone:
           type: string
+        state:
+          type: string
       required:
         - title
         - class
@@ -869,6 +911,7 @@ components:
         - daysPerWeek
         - monthlyFee
         - contactPhone
+        - state
 
     UpdatePostRequest:
       type: object
@@ -902,6 +945,8 @@ components:
           nullable: true
         contactPhone:
           type: string
+        state:
+          type: string
         featured:
           type: boolean
 
@@ -934,6 +979,8 @@ components:
           type: integer
         monthlyFee:
           type: integer
+        state:
+          type: string
         description:
           type: string
           nullable: true
@@ -958,6 +1005,7 @@ components:
         - duration
         - daysPerWeek
         - monthlyFee
+        - state
         - featured
         - createdById
         - createdAt

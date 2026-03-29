@@ -1,90 +1,101 @@
-import { FileText } from "lucide-react";
+import { FileText, CheckCircle, AlertTriangle, Scale, ShieldAlert } from "lucide-react";
+import { motion } from "framer-motion";
 
 const sections = [
   {
     title: "1. Acceptance of Terms",
-    content: `By accessing or using TutorConnect ("the Platform"), you agree to be bound by these Terms of Service. If you do not agree with any part of these terms, you may not use the Platform. These terms apply to all users including parents, tutors, and administrators.`,
+    icon: CheckCircle,
+    content: `By accessing or using TutorSphere ("the Platform"), you agree to be bound by these Terms of Service. If you do not agree with any part of these terms, you may not use the Platform. These terms apply to all users including parents, tutors, and administrators.`,
   },
   {
-    title: "2. Eligibility",
-    content: `You must be at least 18 years of age to register on TutorConnect. If you are registering as a parent on behalf of a minor student, you confirm that you are the legal guardian and take full responsibility for the tuition arrangement. Tutors must provide accurate qualification details during registration.`,
+    title: "2. Registration & Accounts",
+    icon: ShieldAlert,
+    content: `You must be at least 18 years of age to register. You are responsible for your account security. TutorSphere strictly prohibits the creation of multiple accounts or account sharing. We use device-level tracking to detect and block fraudulent registrations or multi-account abuse.`,
   },
   {
-    title: "3. User Accounts",
-    content: `You are responsible for maintaining the confidentiality of your account credentials. You agree to notify us immediately of any unauthorised use of your account. TutorConnect will not be liable for losses resulting from unauthorised access due to your failure to keep credentials secure. You may not create multiple accounts or impersonate another person.`,
+    title: "3. Tuition Requirements",
+    icon: FileText,
+    content: `Parents may post requirements for free. Posts must be genuine and accurate. False, duplicate, or irrelevant posts will be removed without notice. Parents are responsible for communicating their specific needs clearly to matched tutors.`,
   },
   {
-    title: "4. Tuition Post Listings",
-    content: `Parents may post tuition requirements free of charge. Posts must contain accurate information about subjects, class/grade, location, and budget. Posting false, misleading, or offensive content is strictly prohibited and may result in account suspension. TutorConnect reserves the right to remove any post that violates these guidelines.`,
+    title: "4. Contact Unlock & Payments",
+    icon: Scale,
+    content: `Tutors can unlock parent contact details by paying a per-match fee (currently ₹49) or through a valid Subscription plan. All payments are non-refundable since our service (provision of contact details) is delivered immediately upon payment. Disputing valid transactions via your bank without contacting us first may result in account termination.`,
   },
   {
-    title: "5. Contact Unlock & Payments",
-    content: `Tutors may pay a contact-unlock fee (currently ₹49 per post) to access a parent's contact details. This fee is non-refundable except in cases where the contact information provided was demonstrably incorrect, in which case a refund request must be raised within 24 hours. Payments are processed securely via Razorpay. TutorConnect does not store card or banking details.`,
+    title: "5. Anti-Cheat & Fair Use",
+    icon: AlertTriangle,
+    content: `TutorSphere employs advanced security and anti-cheat systems. Any attempt to bypass the payment system, exploit free trials through multiple accounts or browser manipulation, or scrape user data will result in immediate and permanent banning of all associated accounts and devices.`,
   },
   {
-    title: "6. Tutor Conduct",
-    content: `Tutors agree to maintain professional conduct in all interactions with parents and students. Misrepresentation of qualifications, harassment, or any form of misconduct will result in immediate suspension and may be reported to relevant authorities. Tutors are independent contractors; TutorConnect does not employ tutors and is not responsible for the quality of tuition sessions.`,
+    title: "6. Platform Role & Liability",
+    icon: ShieldAlert,
+    content: `TutorSphere is a marketplace connecting tutors and parents. We do not employ tutors and are not party to any tuition agreements. We are not liable for the quality of teaching, student performance, or any disputes between users. Our total liability is limited to the amount paid by you to us in the last 30 days.`,
   },
   {
-    title: "7. Parent Responsibilities",
-    content: `Parents are responsible for verifying tutor credentials and suitability before engaging them. TutorConnect facilitates the connection but does not guarantee the performance or outcomes of any tuition arrangement. Parents should conduct their own due diligence, including background verification if required.`,
+    title: "7. Termination",
+    icon: AlertTriangle,
+    content: `We reserve the right to suspend or terminate any user's access at our sole discretion, particularly for platform abuse, harassment, or violation of our fair use policies. No refunds will be issued for terminated accounts.`,
   },
   {
-    title: "8. Prohibited Activities",
-    content: `You may not: (a) use the platform for any unlawful purpose; (b) post spam or irrelevant content; (c) attempt to bypass the payment system by sharing contact details outside the platform in ways that circumvent our service; (d) scrape, copy, or republish platform content without permission; (e) introduce malware or otherwise interfere with the platform's operation.`,
-  },
-  {
-    title: "9. Limitation of Liability",
-    content: `TutorConnect provides a marketplace to connect tutors and parents. We are not a party to any agreement between them and are not liable for any disputes, damages, or losses arising from tutoring arrangements. Our aggregate liability for any claim shall not exceed the fees you have paid to us in the preceding 3 months.`,
-  },
-  {
-    title: "10. Intellectual Property",
-    content: `All content on TutorConnect, including the logo, design, text, and software, is the property of TutorConnect and protected by applicable intellectual property laws. You may not reproduce or distribute any platform content without prior written permission.`,
-  },
-  {
-    title: "11. Termination",
-    content: `We reserve the right to suspend or terminate your account at any time, with or without notice, for violation of these Terms. You may also delete your account at any time by contacting support. Termination does not entitle you to a refund of any payments made.`,
-  },
-  {
-    title: "12. Governing Law",
-    content: `These Terms shall be governed by the laws of India. Any disputes arising out of or relating to these Terms shall be subject to the exclusive jurisdiction of the courts in New Delhi, India.`,
-  },
-  {
-    title: "13. Changes to Terms",
-    content: `TutorConnect may update these Terms at any time. We will notify users of significant changes via email or platform notification. Continued use of the Platform after changes are posted constitutes your acceptance of the revised Terms.`,
+    title: "8. Jurisdiction",
+    icon: Scale,
+    content: `These terms are governed by the laws of India. Any legal disputes shall be settled exclusively in the competent courts of New Delhi, India.`,
   },
 ];
 
 export default function Terms() {
   return (
-    <div className="min-h-screen bg-slate-50">
-      <section className="bg-gradient-to-br from-primary/10 via-white to-accent/10 py-20">
-        <div className="container mx-auto px-4 md:px-6 text-center max-w-2xl">
-          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-semibold mb-6">
-            <FileText className="w-4 h-4" /> Legal
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">Terms of Service</h1>
-          <p className="text-slate-500 text-sm">Last Updated: January 1, 2025</p>
+    <div className="min-h-screen bg-slate-50 pb-20">
+      <section className="bg-slate-900 py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(99,102,241,0.15),transparent)] opacity-50" />
+        <div className="container mx-auto px-6 relative z-10 text-center max-w-3xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <div className="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-full text-sm font-semibold mb-6 backdrop-blur-md">
+              <FileText className="w-4 h-4 text-primary" /> Rules of Platform
+            </div>
+            <h1 className="text-4xl md:text-6xl font-display font-black text-white mb-6">Terms of Service</h1>
+            <p className="text-slate-400 text-lg leading-relaxed">
+              Please read these terms carefully. They outline your rights, responsibilities, and our policies on security and fair use.
+            </p>
+            <p className="text-slate-500 text-sm mt-8 font-mono tracking-widest uppercase">Last Updated: March 28, 2026</p>
+          </motion.div>
         </div>
       </section>
 
-      <div className="container mx-auto px-4 md:px-6 py-16 max-w-3xl">
-        <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-8 md:p-12 space-y-10">
-          <p className="text-slate-600 leading-relaxed">
-            Welcome to TutorConnect. These Terms of Service govern your use of our platform. By creating an account or 
-            using our services, you agree to comply with and be bound by these terms. Please read them carefully before proceeding.
-          </p>
-          {sections.map((s) => (
-            <div key={s.title}>
-              <h2 className="text-xl font-bold text-slate-900 mb-3">{s.title}</h2>
-              <p className="text-slate-600 leading-relaxed text-sm">{s.content}</p>
-            </div>
+      <div className="container mx-auto px-6 -mt-12 relative z-20">
+        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+          {sections.map((s, i) => (
+            <motion.div 
+              key={s.title}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: i * 0.05 }}
+              className="bg-white rounded-[32px] p-8 shadow-xl shadow-slate-200/40 border border-slate-100 flex flex-col hover:border-primary/20 transition-all group"
+            >
+              <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center mb-6 group-hover:bg-primary/5 transition-colors">
+                <s.icon className="w-6 h-6 text-primary" />
+              </div>
+              <h2 className="text-lg font-bold text-slate-900 mb-4">{s.title}</h2>
+              <p className="text-slate-600 leading-relaxed text-sm flex-1">{s.content}</p>
+            </motion.div>
           ))}
-          <div className="border-t border-slate-100 pt-8">
-            <p className="text-slate-500 text-sm">
-              Questions about these Terms? Contact us at{" "}
-              <a href="mailto:support@tutorconnect.com" className="text-primary hover:underline">support@tutorconnect.com</a>.
-            </p>
+        </div>
+
+        <div className="max-w-4xl mx-auto mt-12 bg-white rounded-[40px] p-10 text-center border border-slate-100 shadow-xl shadow-slate-200/30">
+          <p className="text-slate-500 text-sm mb-6">
+            Accepting these terms means you acknowledge that TutorSphere acts ONLY as a connector and takes no responsibility for user-conduct once details are exchanged.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="mailto:tutorsphereofficial@gmail.com" className="bg-slate-900 text-white px-8 py-3 rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-lg">
+              Legal Inquiries
+            </a>
+            <button onClick={() => window.print()} className="bg-slate-100 text-slate-700 px-8 py-3 rounded-2xl font-bold hover:bg-slate-200 transition-all flex items-center justify-center gap-2">
+              Print Terms
+            </button>
           </div>
         </div>
       </div>

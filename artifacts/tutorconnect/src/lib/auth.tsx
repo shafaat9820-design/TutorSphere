@@ -1,20 +1,13 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { UserProfile } from "@workspace/api-client-react";
 import { getAuthHeaders } from "./apiHeaders";
+import { AuthContext, useAuth } from "./authContext";
 
-interface AuthContextType {
-  user: UserProfile | null;
-  isLoading: boolean;
-  login: (token: string, user: UserProfile) => void;
-  logout: () => void;
-  getAuthHeaders: () => Record<string, string>;
-}
-
-const AuthContext = createContext<AuthContextType | null>(null);
+export { useAuth };
 
 function loadPersistedUser(): UserProfile | null {
   try {
-    const raw = localStorage.getItem("tutorconnect_user");
+    const raw = localStorage.getItem("tutorsphere_user");
     return raw ? JSON.parse(raw) : null;
   } catch {
     return null;
@@ -26,7 +19,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("tutorconnect_token");
+    const token = localStorage.getItem("tutorsphere_token");
     if (!token) {
       setIsLoading(false);
       return;
@@ -38,25 +31,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       })
       .then((profile: UserProfile) => {
         setUser(profile);
-        localStorage.setItem("tutorconnect_user", JSON.stringify(profile));
+        localStorage.setItem("tutorsphere_user", JSON.stringify(profile));
       })
       .catch(() => {
-        localStorage.removeItem("tutorconnect_token");
-        localStorage.removeItem("tutorconnect_user");
+        localStorage.removeItem("tutorsphere_token");
+        localStorage.removeItem("tutorsphere_user");
         setUser(null);
       })
       .finally(() => setIsLoading(false));
   }, []);
 
   const login = (token: string, profile: UserProfile) => {
-    localStorage.setItem("tutorconnect_token", token);
-    localStorage.setItem("tutorconnect_user", JSON.stringify(profile));
+    localStorage.setItem("tutorsphere_token", token);
+    localStorage.setItem("tutorsphere_user", JSON.stringify(profile));
     setUser(profile);
   };
 
   const logout = () => {
-    localStorage.removeItem("tutorconnect_token");
-    localStorage.removeItem("tutorconnect_user");
+    localStorage.removeItem("tutorsphere_token");
+    localStorage.removeItem("tutorsphere_user");
     setUser(null);
     window.location.href = "/login";
   };
@@ -66,12 +59,4 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
 }
