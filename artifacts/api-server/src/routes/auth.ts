@@ -350,6 +350,12 @@ router.post("/auth/login", authLimiter, async (req, res) => {
       return;
     }
 
+    if (user.isBanned) {
+      console.log("[LOGIN] Banned user attempted login:", email);
+      res.status(403).json({ message: "Your account has been suspended. Please contact support." });
+      return;
+    }
+
     const isSuspicious = await checkDeviceSuspicion(deviceId);
 
     await db.update(usersTable)
@@ -401,6 +407,11 @@ router.get("/auth/me", authenticate, async (req: AuthRequest, res) => {
 
     if (!user) {
       res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    if (user.isBanned) {
+      res.status(403).json({ message: "Account suspended" });
       return;
     }
 

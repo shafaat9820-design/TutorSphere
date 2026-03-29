@@ -25,5 +25,6 @@ export interface UserProfile {
   isSuspicious: boolean;
   planType: UserProfilePlanType;
   planExpiry?: Date | null;
+  isBanned: boolean;
   createdAt: Date;
 }

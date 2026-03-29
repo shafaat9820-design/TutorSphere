@@ -70,20 +70,20 @@ export default function CreatePost() {
   return (
     <div className="min-h-screen bg-slate-50">
       <Navbar />
-      <div className="bg-slate-900 pb-24 pt-8">
-        <div className="container mx-auto px-4 max-w-4xl">
+      <div className="bg-slate-900 pb-20 sm:pb-24 pt-6 md:pt-8">
+        <div className="container mx-auto px-4 md:px-4 max-w-4xl">
           <Button variant="ghost" className="text-slate-400 hover:text-white mb-4 -ml-4" onClick={() => window.history.back()}>
             <ChevronLeft className="w-4 h-4 mr-1" /> Back
           </Button>
-          <div className="flex justify-between items-start">
+          <div className="flex flex-col sm:flex-row justify-between items-start gap-4 sm:gap-0">
             <div>
-              <h1 className="text-3xl md:text-4xl font-display font-bold text-white mb-2">Post a Requirement</h1>
-              <p className="text-slate-400">Fill in the details to find the perfect tutor.</p>
+              <h1 className="text-2xl md:text-4xl font-display font-bold text-white mb-2">Post a Requirement</h1>
+              <p className="text-slate-400 text-sm md:text-base">Fill in the details to find the perfect tutor.</p>
             </div>
             {user?.role === "parent" && (
-              <div className="hidden md:block bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10">
+              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-3 md:p-4 border border-white/10 shrink-0">
                 <p className="text-white/60 text-[10px] uppercase font-bold tracking-widest mb-1">Active Posts</p>
-                <div className="text-2xl font-bold text-white">{user.activePostCount} / {user.parentPlanExpiry && new Date(user.parentPlanExpiry) > new Date() ? 5 : 1}</div>
+                <div className="text-xl md:text-2xl font-bold text-white">{user.activePostCount} / {user.parentPlanExpiry && new Date(user.parentPlanExpiry) > new Date() ? 5 : 1}</div>
               </div>
             )}
           </div>

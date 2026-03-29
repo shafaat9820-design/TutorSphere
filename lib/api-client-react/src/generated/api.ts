@@ -45,6 +45,8 @@ import type {
   ToggleFeaturedRequest,
   TuitionPost,
   UpdatePostRequest,
+  UpdateUserRoleRequest,
+  UpdateUserStatusRequest,
   UserProfile,
   VerifyPaymentRequest,
   VerifyPaymentResponse,
@@ -1793,6 +1795,265 @@ export const useAdminDeleteUser = <
   TContext
 > => {
   return useMutation(getAdminDeleteUserMutationOptions(options));
+};
+
+/**
+ * @summary Ban or unban a user
+ */
+export const getAdminUpdateUserStatusUrl = (id: number) => {
+  return `/api/admin/users/${id}/status`;
+};
+
+export const adminUpdateUserStatus = async (
+  id: number,
+  updateUserStatusRequest: UpdateUserStatusRequest,
+  options?: RequestInit,
+): Promise<SuccessResponse> => {
+  return customFetch<SuccessResponse>(getAdminUpdateUserStatusUrl(id), {
+    ...options,
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(updateUserStatusRequest),
+  });
+};
+
+export const getAdminUpdateUserStatusMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof adminUpdateUserStatus>>,
+    TError,
+    { id: number; data: BodyType<UpdateUserStatusRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof adminUpdateUserStatus>>,
+  TError,
+  { id: number; data: BodyType<UpdateUserStatusRequest> },
+  TContext
+> => {
+  const mutationKey = ["adminUpdateUserStatus"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof adminUpdateUserStatus>>,
+    { id: number; data: BodyType<UpdateUserStatusRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return adminUpdateUserStatus(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type AdminUpdateUserStatusMutationResult = NonNullable<
+  Awaited<ReturnType<typeof adminUpdateUserStatus>>
+>;
+export type AdminUpdateUserStatusMutationBody =
+  BodyType<UpdateUserStatusRequest>;
+export type AdminUpdateUserStatusMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Ban or unban a user
+ */
+export const useAdminUpdateUserStatus = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof adminUpdateUserStatus>>,
+    TError,
+    { id: number; data: BodyType<UpdateUserStatusRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof adminUpdateUserStatus>>,
+  TError,
+  { id: number; data: BodyType<UpdateUserStatusRequest> },
+  TContext
+> => {
+  return useMutation(getAdminUpdateUserStatusMutationOptions(options));
+};
+
+/**
+ * @summary Change a user's role
+ */
+export const getAdminUpdateUserRoleUrl = (id: number) => {
+  return `/api/admin/users/${id}/role`;
+};
+
+export const adminUpdateUserRole = async (
+  id: number,
+  updateUserRoleRequest: UpdateUserRoleRequest,
+  options?: RequestInit,
+): Promise<SuccessResponse> => {
+  return customFetch<SuccessResponse>(getAdminUpdateUserRoleUrl(id), {
+    ...options,
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(updateUserRoleRequest),
+  });
+};
+
+export const getAdminUpdateUserRoleMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof adminUpdateUserRole>>,
+    TError,
+    { id: number; data: BodyType<UpdateUserRoleRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof adminUpdateUserRole>>,
+  TError,
+  { id: number; data: BodyType<UpdateUserRoleRequest> },
+  TContext
+> => {
+  const mutationKey = ["adminUpdateUserRole"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof adminUpdateUserRole>>,
+    { id: number; data: BodyType<UpdateUserRoleRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return adminUpdateUserRole(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type AdminUpdateUserRoleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof adminUpdateUserRole>>
+>;
+export type AdminUpdateUserRoleMutationBody = BodyType<UpdateUserRoleRequest>;
+export type AdminUpdateUserRoleMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Change a user's role
+ */
+export const useAdminUpdateUserRole = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof adminUpdateUserRole>>,
+    TError,
+    { id: number; data: BodyType<UpdateUserRoleRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof adminUpdateUserRole>>,
+  TError,
+  { id: number; data: BodyType<UpdateUserRoleRequest> },
+  TContext
+> => {
+  return useMutation(getAdminUpdateUserRoleMutationOptions(options));
+};
+
+/**
+ * @summary Trigger password reset email for a user
+ */
+export const getAdminResetPasswordUrl = (id: number) => {
+  return `/api/admin/users/${id}/reset-password`;
+};
+
+export const adminResetPassword = async (
+  id: number,
+  options?: RequestInit,
+): Promise<SuccessResponse> => {
+  return customFetch<SuccessResponse>(getAdminResetPasswordUrl(id), {
+    ...options,
+    method: "POST",
+  });
+};
+
+export const getAdminResetPasswordMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof adminResetPassword>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof adminResetPassword>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  const mutationKey = ["adminResetPassword"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof adminResetPassword>>,
+    { id: number }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return adminResetPassword(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type AdminResetPasswordMutationResult = NonNullable<
+  Awaited<ReturnType<typeof adminResetPassword>>
+>;
+
+export type AdminResetPasswordMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Trigger password reset email for a user
+ */
+export const useAdminResetPassword = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof adminResetPassword>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof adminResetPassword>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  return useMutation(getAdminResetPasswordMutationOptions(options));
 };
 
 /**

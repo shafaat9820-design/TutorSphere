@@ -55,6 +55,7 @@ export const LoginResponse = zod.object({
     isSuspicious: zod.boolean(),
     planType: zod.enum(["none", "weekly", "monthly"]),
     planExpiry: zod.date().nullish(),
+    isBanned: zod.boolean(),
     createdAt: zod.date(),
   }),
 });
@@ -79,6 +80,7 @@ export const GetMeResponse = zod.object({
   isSuspicious: zod.boolean(),
   planType: zod.enum(["none", "weekly", "monthly"]),
   planExpiry: zod.date().nullish(),
+  isBanned: zod.boolean(),
   createdAt: zod.date(),
 });
 
@@ -407,6 +409,7 @@ export const AdminGetUsersResponse = zod.object({
       isSuspicious: zod.boolean(),
       planType: zod.enum(["none", "weekly", "monthly"]),
       planExpiry: zod.date().nullish(),
+      isBanned: zod.boolean(),
       createdAt: zod.date(),
     }),
   ),
@@ -423,6 +426,47 @@ export const AdminDeleteUserParams = zod.object({
 });
 
 export const AdminDeleteUserResponse = zod.object({
+  message: zod.string(),
+});
+
+/**
+ * @summary Ban or unban a user
+ */
+export const AdminUpdateUserStatusParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const AdminUpdateUserStatusBody = zod.object({
+  isBanned: zod.boolean(),
+});
+
+export const AdminUpdateUserStatusResponse = zod.object({
+  message: zod.string(),
+});
+
+/**
+ * @summary Change a user's role
+ */
+export const AdminUpdateUserRoleParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const AdminUpdateUserRoleBody = zod.object({
+  role: zod.enum(["admin", "tutor", "parent"]),
+});
+
+export const AdminUpdateUserRoleResponse = zod.object({
+  message: zod.string(),
+});
+
+/**
+ * @summary Trigger password reset email for a user
+ */
+export const AdminResetPasswordParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const AdminResetPasswordResponse = zod.object({
   message: zod.string(),
 });
 

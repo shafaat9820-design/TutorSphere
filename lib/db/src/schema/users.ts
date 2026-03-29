@@ -32,6 +32,7 @@ export const usersTable = pgTable("users", {
   deviceId: text("device_id"),
   lastIP: text("last_ip"),
   isSuspicious: boolean("is_suspicious").notNull().default(false),
+  isBanned: boolean("is_banned").notNull().default(false),
   
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });

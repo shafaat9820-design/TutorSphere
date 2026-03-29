@@ -75,6 +75,7 @@ export interface UserProfile {
   isSuspicious: boolean;
   planType: UserProfilePlanType;
   planExpiry?: string | null;
+  isBanned: boolean;
   createdAt: string;
 }
 
@@ -375,6 +376,23 @@ export interface AnalyticsData {
   revenueByDay: AnalyticsDataRevenueByDayItem[];
   topSubjects: AnalyticsDataTopSubjectsItem[];
   topLocations: AnalyticsDataTopLocationsItem[];
+}
+
+export interface UpdateUserStatusRequest {
+  isBanned: boolean;
+}
+
+export type UpdateUserRoleRequestRole =
+  (typeof UpdateUserRoleRequestRole)[keyof typeof UpdateUserRoleRequestRole];
+
+export const UpdateUserRoleRequestRole = {
+  admin: "admin",
+  tutor: "tutor",
+  parent: "parent",
+} as const;
+
+export interface UpdateUserRoleRequest {
+  role: UpdateUserRoleRequestRole;
 }
 
 export type ListPostsParams = {

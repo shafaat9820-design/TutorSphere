@@ -582,6 +582,81 @@ paths:
               schema:
                 $ref: "#/components/schemas/SuccessResponse"
 
+  /admin/users/{id}/status:
+    patch:
+      operationId: adminUpdateUserStatus
+      tags: [admin]
+      summary: Ban or unban a user
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserStatusRequest"
+      responses:
+        "200":
+          description: Status updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /admin/users/{id}/role:
+    patch:
+      operationId: adminUpdateUserRole
+      tags: [admin]
+      summary: Change a user's role
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserRoleRequest"
+      responses:
+        "200":
+          description: Role updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /admin/users/{id}/reset-password:
+    post:
+      operationId: adminResetPassword
+      tags: [admin]
+      summary: Trigger password reset email for a user
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Reset email triggered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
   /admin/posts:
     get:
       operationId: adminGetPosts
@@ -850,6 +925,8 @@ components:
           type: string
           format: date-time
           nullable: true
+        isBanned:
+          type: boolean
         createdAt:
           type: string
           format: date-time
@@ -858,6 +935,7 @@ components:
         - name
         - email
         - role
+        - isBanned
         - freeContactUsed
         - contactsUnlockedCount
         - activePostCount
@@ -1352,3 +1430,20 @@ components:
         - revenueByDay
         - topSubjects
         - topLocations
+
+    UpdateUserStatusRequest:
+      type: object
+      properties:
+        isBanned:
+          type: boolean
+      required:
+        - isBanned
+
+    UpdateUserRoleRequest:
+      type: object
+      properties:
+        role:
+          type: string
+          enum: [admin, tutor, parent]
+      required:
+        - role

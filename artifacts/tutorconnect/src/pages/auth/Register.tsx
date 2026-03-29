@@ -174,7 +174,7 @@ export default function Register() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="w-full max-w-2xl relative z-10 py-12"
+          className="w-full max-w-2xl relative z-10 py-8 md:py-12"
         >
           <div className="lg:hidden flex justify-center mb-8">
             <Link href="/" className="flex items-center gap-2.5">
@@ -361,13 +361,13 @@ export default function Register() {
                           value={otpValue}
                           onChange={(value) => setOtpValue(value)}
                         >
-                          <InputOTPGroup className="gap-2">
-                            <InputOTPSlot index={0} className="h-14 w-12 rounded-xl text-xl border-slate-200" />
-                            <InputOTPSlot index={1} className="h-14 w-12 rounded-xl text-xl border-slate-200" />
-                            <InputOTPSlot index={2} className="h-14 w-12 rounded-xl text-xl border-slate-200" />
-                            <InputOTPSlot index={3} className="h-14 w-12 rounded-xl text-xl border-slate-200" />
-                            <InputOTPSlot index={4} className="h-14 w-12 rounded-xl text-xl border-slate-200" />
-                            <InputOTPSlot index={5} className="h-14 w-12 rounded-xl text-xl border-slate-200" />
+                          <InputOTPGroup className="gap-1.5 sm:gap-2">
+                            <InputOTPSlot index={0} className="h-12 w-10 sm:h-14 sm:w-12 rounded-xl text-lg sm:text-xl border-slate-200" />
+                            <InputOTPSlot index={1} className="h-12 w-10 sm:h-14 sm:w-12 rounded-xl text-lg sm:text-xl border-slate-200" />
+                            <InputOTPSlot index={2} className="h-12 w-10 sm:h-14 sm:w-12 rounded-xl text-lg sm:text-xl border-slate-200" />
+                            <InputOTPSlot index={3} className="h-12 w-10 sm:h-14 sm:w-12 rounded-xl text-lg sm:text-xl border-slate-200" />
+                            <InputOTPSlot index={4} className="h-12 w-10 sm:h-14 sm:w-12 rounded-xl text-lg sm:text-xl border-slate-200" />
+                            <InputOTPSlot index={5} className="h-12 w-10 sm:h-14 sm:w-12 rounded-xl text-lg sm:text-xl border-slate-200" />
                           </InputOTPGroup>
                         </InputOTP>
                       </div>

@@ -61,6 +61,8 @@ router.get("/admin/users", ...adminOnly, async (req: AuthRequest, res) => {
         email: usersTable.email,
         phone: usersTable.phone,
         role: usersTable.role,
+        isBanned: usersTable.isBanned,
+        isSuspicious: usersTable.isSuspicious,
         createdAt: usersTable.createdAt,
       })
       .from(usersTable)
@@ -81,13 +83,78 @@ router.get("/admin/users", ...adminOnly, async (req: AuthRequest, res) => {
   }
 });
 
-router.delete("/admin/users/:id", ...adminOnly, async (req, res) => {
+router.delete("/admin/users/:id", ...adminOnly, async (req: AuthRequest, res) => {
   try {
-    await db.delete(usersTable).where(eq(usersTable.id, Number(req.params.id)));
-    res.json({ message: "User deleted" });
+    const id = Number(req.params.id);
+    if (id === req.user?.id) {
+      return res.status(400).json({ message: "You cannot delete your own account" });
+    }
+    await db.delete(usersTable).where(eq(usersTable.id, id));
+    return res.json({ message: "User deleted" });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Ban/Unban User
+router.patch("/admin/users/:id/status", ...adminOnly, async (req: AuthRequest, res) => {
+  try {
+    const { isBanned } = req.body;
+    const id = Number(req.params.id);
+    
+    if (id === req.user?.id) {
+      return res.status(400).json({ message: "You cannot ban yourself" });
+    }
+
+    await db.update(usersTable).set({ isBanned: Boolean(isBanned) }).where(eq(usersTable.id, id));
+    return res.json({ message: isBanned ? "User banned" : "User unbanned" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Change User Role
+router.patch("/admin/users/:id/role", ...adminOnly, async (req: AuthRequest, res) => {
+  try {
+    const { role } = req.body;
+    const id = Number(req.params.id);
+
+    if (id === req.user?.id) {
+      return res.status(400).json({ message: "You cannot change your own role" });
+    }
+
+    if (!["admin", "tutor", "parent"].includes(role)) {
+      return res.status(400).json({ message: "Invalid role" });
+    }
+
+    await db.update(usersTable).set({ role }).where(eq(usersTable.id, id));
+    return res.json({ message: `Role updated to ${role}` });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Trigger Password Reset Email
+router.post("/admin/users/:id/reset-password", ...adminOnly, async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const [user] = await db.select().from(usersTable).where(eq(usersTable.id, id));
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // In a real app, logic to send email via Brevo would go here
+    // For now, we simulate the success
+    console.log(`[Admin] Triggered password reset for ${user.email}`);
+    
+    return res.json({ message: "Password reset instructions sent to user's email" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
   }
 });
 

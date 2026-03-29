@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
+import { useAuth } from "@/lib/auth";
 import { useListPosts, TuitionPost, ListPostsMode, ListPostsMedium } from "@workspace/api-client-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,12 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, MapPin, GraduationCap, Clock, IndianRupee, SlidersHorizontal, Loader2, ArrowRight, Sparkles } from "lucide-react";
+import { Search, MapPin, GraduationCap, Clock, IndianRupee, SlidersHorizontal, Loader2, ArrowRight, Sparkles, PlusCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
 import { INDIAN_STATES } from "@/lib/constants";
 
 export default function PostList() {
+  const { user } = useAuth();
   const [search, setSearch] = useState("");
   const [mode, setMode] = useState<ListPostsMode | "all">("all");
   const [medium, setMedium] = useState<ListPostsMedium | "all">("all");
@@ -31,28 +33,39 @@ export default function PostList() {
   return (
     <div className="min-h-screen bg-slate-50/50 pb-20">
       {/* Header */}
-      <div className="relative bg-gradient-to-br from-[#0f0618] to-[#1a084a] text-white py-20 overflow-hidden">
+      <div className="relative bg-gradient-to-br from-[#0f0618] to-[#1a084a] text-white py-14 md:py-20 overflow-hidden">
         <div className="absolute inset-0 bg-dot-pattern opacity-30" />
         <div className="absolute top-0 right-1/4 w-80 h-80 bg-violet-600/15 rounded-full blur-[80px]" />
         <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <div className="inline-flex items-center gap-2 bg-violet-500/10 border border-violet-500/20 text-violet-300 text-xs font-semibold px-3 py-1.5 rounded-full mb-5">
-            <Sparkles className="w-3.5 h-3.5" /> Live Requirements
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-6">
+            <div>
+              <div className="inline-flex items-center gap-2 bg-violet-500/10 border border-violet-500/20 text-violet-300 text-xs font-semibold px-3 py-1.5 rounded-full mb-4">
+                <Sparkles className="w-3.5 h-3.5" /> Live Requirements
+              </div>
+              <h1 className="text-3xl md:text-5xl font-extrabold mb-2 text-white"><span className="gradient-text">Tuitions/Jobs</span></h1>
+              <p className="text-slate-400 text-sm md:text-lg max-w-xl">Browse the latest requirements posted by parents and students. Apply to the ones that match your expertise.</p>
+            </div>
+            {user?.role === "parent" && (
+              <Link href="/parent/posts/new" className="shrink-0">
+                <Button className="h-11 md:h-12 px-5 md:px-6 rounded-xl font-bold bg-white text-violet-700 hover:bg-slate-100 shadow-xl flex items-center gap-2 transition-all w-full md:w-auto">
+                  <PlusCircle className="w-4 h-4 md:w-5 md:h-5" /> Post Requirement
+                </Button>
+              </Link>
+            )}
           </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-3 text-white"><span className="gradient-text">Tuitions/Jobs</span></h1>
-          <p className="text-slate-400 text-lg max-w-xl mb-10">Browse the latest requirements posted by parents and students. Apply to the ones that match your expertise.</p>
 
           {/* Search bar */}
-          <div className="bg-white/95 backdrop-blur-xl rounded-2xl p-2 max-w-2xl flex gap-2 shadow-2xl shadow-black/20">
+          <div className="bg-white/95 backdrop-blur-xl rounded-2xl p-1.5 md:p-2 max-w-2xl flex gap-2 shadow-2xl shadow-black/20">
             <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+              <Search className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 md:w-5 md:h-5" />
               <Input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search by subject, class, or location..."
-                className="pl-12 h-12 border-0 shadow-none text-base focus-visible:ring-0 text-slate-900 bg-transparent"
+                className="pl-10 md:pl-12 h-11 md:h-12 border-0 shadow-none text-sm md:text-base focus-visible:ring-0 text-slate-900 bg-transparent"
               />
             </div>
-            <Button className="h-12 px-6 rounded-xl shrink-0 font-semibold bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 border-0 text-white shadow-md shadow-violet-500/30">
+            <Button className="h-11 md:h-12 px-4 md:px-6 rounded-xl shrink-0 font-semibold bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 border-0 text-white shadow-md shadow-violet-500/30 text-sm md:text-base">
               Search
             </Button>
           </div>

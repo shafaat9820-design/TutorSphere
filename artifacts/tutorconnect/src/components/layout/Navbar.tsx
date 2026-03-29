@@ -34,7 +34,10 @@ export function Navbar() {
 
   const navLinks = [
     { href: "/", label: "Home" },
-    { href: "/posts", label: "Tuitions/Jobs" },
+    { 
+      href: "/posts", 
+      label: user?.role === "tutor" ? "Find Tuitions" : (user?.role === "parent" ? "Find Tutors" : "Tuitions/Jobs") 
+    },
     { href: "/pricing", label: "Pricing" },
     { href: "/about", label: "About Us" },
     { href: "/contact", label: "Contact" },
@@ -150,7 +153,7 @@ export function Navbar() {
 
       {/* Mobile Nav */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t border-slate-200/60 bg-white/95 backdrop-blur-2xl py-4 px-4 shadow-2xl absolute w-full left-0 top-16">
+        <div className="md:hidden border-t border-slate-200/60 bg-white/95 backdrop-blur-2xl py-4 px-4 shadow-2xl absolute w-full left-0 top-16 animate-page-in">
           <nav className="flex flex-col gap-1">
             {navLinks.map((link) => (
               <Link
@@ -166,19 +169,28 @@ export function Navbar() {
             ))}
             {user ? (
               <>
-                <Link
-                  href={getDashboardLink()}
-                  className="text-sm font-medium text-slate-700 py-2.5 px-3 rounded-xl hover:bg-slate-100 flex items-center gap-2"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <LayoutDashboard className="w-4 h-4 text-violet-600" /> Dashboard
-                </Link>
-                <button
-                  onClick={() => { logout(); setIsMobileMenuOpen(false); }}
-                  className="text-left text-sm font-medium text-red-600 py-2.5 px-3 rounded-xl hover:bg-red-50 flex items-center gap-2"
-                >
-                  <LogOut className="w-4 h-4" /> Log out
-                </button>
+                <div className="mt-2 pt-2 border-t border-slate-100 flex flex-col gap-1">
+                  <Link
+                    href="/profile"
+                    className="text-sm font-medium text-slate-700 py-2.5 px-3 rounded-xl hover:bg-slate-100 flex items-center gap-2"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <UserCircle className="w-4 h-4 text-violet-600" /> Edit Profile
+                  </Link>
+                  <Link
+                    href={getDashboardLink()}
+                    className="text-sm font-medium text-slate-700 py-2.5 px-3 rounded-xl hover:bg-slate-100 flex items-center gap-2"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <LayoutDashboard className="w-4 h-4 text-violet-600" /> Dashboard
+                  </Link>
+                  <button
+                    onClick={() => { logout(); setIsMobileMenuOpen(false); }}
+                    className="text-left text-sm font-medium text-red-600 py-2.5 px-3 rounded-xl hover:bg-red-50 flex items-center gap-2"
+                  >
+                    <LogOut className="w-4 h-4" /> Log out
+                  </button>
+                </div>
               </>
             ) : (
               <div className="flex flex-col gap-2 pt-2 mt-2 border-t border-slate-100">

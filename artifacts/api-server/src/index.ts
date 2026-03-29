@@ -17,3 +17,5 @@ process.on('SIGINT', () => {
   server.close();
   process.exit(0);
 });
+
+// Trigger restart for database schema sync

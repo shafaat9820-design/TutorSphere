@@ -31,15 +31,18 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <div className="flex min-h-screen w-full bg-[#f8fafc]">
+    <div className="flex min-h-screen w-full bg-[#020617] text-slate-300">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex w-72 flex-col fixed inset-y-0 z-50 bg-[#0f172a] text-slate-300 border-r border-slate-800 shadow-2xl">
+      <aside className="hidden lg:flex w-72 flex-col fixed inset-y-0 z-50 bg-[#0f172a]/50 backdrop-blur-3xl text-slate-300 border-r border-slate-800/50 shadow-2xl">
         <div className="p-8 flex flex-col h-full">
           <Link href="/" className="flex items-center gap-3 mb-10 group">
             <div className="w-10 h-10 rounded-xl bg-violet-600 flex items-center justify-center shadow-lg shadow-violet-500/20 group-hover:scale-110 transition-transform">
               <img src="/logo.png" alt="TS" className="w-6 h-6 object-contain brightness-0 invert" />
             </div>
-            <span className="font-display font-bold text-xl text-white tracking-tight">TutorSphere</span>
+            <div className="flex flex-col">
+              <span className="font-display font-bold text-xl text-white tracking-tight leading-none">TutorSphere</span>
+              <span className="text-[10px] font-bold text-violet-500 uppercase tracking-widest mt-1">Command Center</span>
+            </div>
           </Link>
 
           <nav className="flex-1 space-y-1.5">
@@ -49,12 +52,12 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                 <Link key={item.title} href={item.url}>
                   <a className={`flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 group ${
                     isActive 
-                      ? "bg-violet-600/15 text-violet-400 shadow-sm shadow-violet-500/10 ring-1 ring-violet-500/20" 
+                      ? "bg-violet-600/20 text-white shadow-xl shadow-violet-500/10 ring-1 ring-violet-500/30" 
                       : "hover:bg-slate-800/50 hover:text-white"
                   }`}>
-                    <item.icon className={`w-5 h-5 transition-colors ${isActive ? "text-violet-500" : "group-hover:text-violet-400"}`} />
+                    <item.icon className={`w-5 h-5 transition-colors ${isActive ? "text-violet-400" : "group-hover:text-violet-400"}`} />
                     {item.title}
-                    {isActive && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.6)]" />}
+                    {isActive && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-violet-500 shadow-[0_0_12px_rgba(139,92,246,0.8)]" />}
                   </a>
                 </Link>
               );
@@ -62,10 +65,10 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className="mt-auto space-y-6">
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-800/60">
+            <div className="p-4 rounded-2xl bg-slate-900/50 border border-slate-800/60 backdrop-blur-md">
               <div className="flex items-center gap-3 mb-3">
                 <Avatar className="h-9 w-9 border-2 border-slate-700">
-                  <AvatarFallback className="bg-violet-600 text-white text-xs font-bold">
+                  <AvatarFallback className="bg-violet-600 text-white text-xs font-bold font-display">
                     {user?.name.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
@@ -74,6 +77,15 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                   <p className="text-[10px] text-slate-500 truncate">{user?.email}</p>
                 </div>
               </div>
+
+              <div className="mb-4 p-3 rounded-xl bg-emerald-500/5 border border-emerald-500/10 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">System Online</span>
+                </div>
+                <span className="text-[9px] font-medium text-slate-600">12ms</span>
+              </div>
+
               <Button 
                 variant="ghost" 
                 onClick={logout}
@@ -89,38 +101,38 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
       {/* Main Content Area */}
       <div className="flex-1 lg:pl-72 flex flex-col min-h-screen">
         {/* Mobile Header */}
-        <header className="lg:hidden h-16 bg-white border-b border-slate-200 px-4 flex items-center justify-between sticky top-0 z-40">
+        <header className="lg:hidden h-16 bg-[#0f172a] border-b border-slate-800 px-4 flex items-center justify-between sticky top-0 z-40">
           <button 
             onClick={() => setIsMobileMenuOpen(true)}
-            className="p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-lg"
+            className="p-2 -ml-2 text-slate-400 hover:bg-slate-800 rounded-lg"
           >
             <Menu className="w-6 h-6" />
           </button>
-          <img src="/logo.png" alt="TutorSphere" className="h-8 w-auto" />
+          <img src="/logo.png" alt="TutorSphere" className="h-8 w-auto brightness-0 invert" />
           <div className="w-10" /> {/* Spacer */}
         </header>
 
         {/* Desktop Header */}
-        <header className="hidden lg:flex h-20 bg-white/70 backdrop-blur-xl border-b border-slate-200 px-10 items-center justify-between sticky top-0 z-40 transition-all duration-300 overflow-hidden">
+        <header className="hidden lg:flex h-20 bg-[#020617]/80 backdrop-blur-xl border-b border-slate-800/50 px-10 items-center justify-between sticky top-0 z-40 transition-all duration-300 overflow-hidden">
           <div className="flex items-center gap-4">
-            <h1 className="font-display font-bold text-2xl text-slate-900 tracking-tight">
+            <h1 className="font-display font-bold text-2xl text-white tracking-tight">
               {navItems.find(i => i.url === location)?.title || "Admin"}
             </h1>
-            <div className="h-5 w-px bg-slate-200 mx-2" />
-            <span className="text-sm font-medium text-slate-400">TutorSphere Management Console</span>
+            <div className="h-5 w-px bg-slate-800 mx-2" />
+            <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">Console v2.0</span>
           </div>
           
           <div className="flex items-center gap-6">
             <Link href="/">
-              <a className="text-sm font-semibold text-violet-600 hover:text-violet-700 flex items-center gap-2 bg-violet-50 px-4 py-2 rounded-xl transition-all hover:bg-violet-100">
-                <ChevronLeft className="w-4 h-4" /> Back to Site
+              <a className="text-sm font-bold text-violet-400 hover:text-violet-300 flex items-center gap-2 bg-violet-600/10 px-5 py-2.5 rounded-xl transition-all hover:bg-violet-600/20 ring-1 ring-violet-500/20">
+                <ChevronLeft className="w-4 h-4" /> Go to Main Site
               </a>
             </Link>
           </div>
         </header>
 
         <main className="flex-1 px-4 lg:px-10 py-8 lg:py-10">
-          <div className="max-w-7xl mx-auto animate-in fade-in duration-500 slide-in-from-bottom-4">
+          <div className="max-w-7xl mx-auto animate-in fade-in duration-700 slide-in-from-bottom-4">
             {children}
           </div>
         </main>

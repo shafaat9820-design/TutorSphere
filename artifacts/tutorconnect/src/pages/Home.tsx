@@ -47,7 +47,7 @@ export default function Home() {
               <div className="inline-flex items-center gap-2 bg-primary/20 border border-primary/30 text-primary-foreground px-4 py-1.5 rounded-full text-sm font-bold mb-8 backdrop-blur-md">
                 <Zap className="w-4 h-4 fill-primary text-primary" /> #1 Tutor Marketplace in India
               </div>
-              <h1 className="text-5xl md:text-7xl font-display font-black text-white mb-8 leading-[1.1] tracking-tight">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-black text-white mb-8 leading-[1.1] tracking-tight">
                 {isTutor ? (
                   <>Find the Perfect <span className="gradient-text italic">Tuition</span> For Your Career</>
                 ) : (
@@ -62,7 +62,9 @@ export default function Home() {
                 <Button 
                   onClick={() => {
                     if (!user) {
-                      setLocation("/register?role=parent&returnTo=/posts");
+                      setLocation("/register?role=parent&returnTo=/parent/posts/new");
+                    } else if (isParent) {
+                      setLocation("/parent/posts/new");
                     } else {
                       setLocation("/posts");
                     }
@@ -219,8 +221,8 @@ export default function Home() {
       </section>
 
       {/* Value Grid */}
-      <div className="py-16 bg-white container mx-auto px-6 relative z-30 -mt-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="py-12 md:py-16 bg-white container mx-auto px-4 md:px-6 relative z-30 -mt-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             <FeatureBox 
               icon={Search} 
               title="Smart Matching" 
@@ -243,8 +245,8 @@ export default function Home() {
       </div>
 
       {/* For Parents Section */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-6">
+      <section className="py-16 md:py-24 bg-white">
+        <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col lg:flex-row items-center gap-20">
             <div className="lg:w-1/2">
               <div className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest mb-6 inline-block">For Parents</div>
@@ -260,7 +262,7 @@ export default function Home() {
               <Button 
                 onClick={() => {
                   if (!user) {
-                    setLocation("/register?role=parent&returnTo=/posts");
+                    setLocation("/register?role=parent&returnTo=/parent/posts/new");
                   } else if (isTutor) {
                     toast({
                       title: "Access Restricted",
@@ -268,7 +270,7 @@ export default function Home() {
                       variant: "destructive",
                     });
                   } else {
-                    setLocation("/posts");
+                    setLocation("/parent/posts/new");
                   }
                 }}
                 className="h-14 px-8 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold shadow-lg flex items-center gap-2"
@@ -351,9 +353,9 @@ export default function Home() {
       </section>
 
       {/* For Tutors Section */}
-      <section className="py-24 bg-slate-900 overflow-hidden relative">
+      <section className="py-16 md:py-24 bg-slate-900 overflow-hidden relative">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/10 blur-[150px] -z-0" />
-        <div className="container mx-auto px-6 relative z-10">
+        <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="flex flex-col lg:flex-row-reverse items-center gap-20">
             <div className="lg:w-1/2">
               <div className="bg-primary/20 text-primary-foreground px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest mb-6 inline-block">For Tutors</div>
@@ -415,8 +417,8 @@ export default function Home() {
       </section>
 
       {/* Trust Section */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-6 text-center max-w-4xl">
+      <section className="py-16 md:py-24 bg-white">
+        <div className="container mx-auto px-4 md:px-6 text-center max-w-4xl">
            <Award className="w-16 h-16 text-primary mx-auto mb-8" />
            <h2 className="text-4xl md:text-5xl font-display font-black text-slate-900 mb-8">Building Trust in Education</h2>
            <p className="text-slate-500 text-lg leading-relaxed mb-12">
@@ -431,7 +433,7 @@ export default function Home() {
       </section>
 
       {/* Footer CTA */}
-      <section className="py-24 bg-primary text-white text-center rounded-t-[60px] md:rounded-t-[100px]">
+      <section className="py-20 md:py-24 bg-primary text-white text-center rounded-t-[40px] md:rounded-t-[80px] lg:rounded-t-[100px]">
          <div className="container mx-auto px-6 max-w-2xl">
             <h2 className="text-4xl md:text-6xl font-display font-black mb-8 leading-tight">Start Your Journey Today</h2>
             <p className="text-primary-foreground/80 text-lg mb-12 font-medium">Join thousands of parents and tutors who have found their perfect match.</p>
@@ -439,7 +441,9 @@ export default function Home() {
               <Button 
                 onClick={() => {
                   if (!user) {
-                    setLocation("/register?role=parent&returnTo=/posts");
+                    setLocation("/register?role=parent&returnTo=/parent/posts/new");
+                  } else if (isParent) {
+                    setLocation("/parent/posts/new");
                   } else {
                     setLocation("/posts");
                   }
