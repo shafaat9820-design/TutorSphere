@@ -5,6 +5,9 @@ import router from "./routes";
 
 const app: Express = express();
 
+// Trust proxy for Render's load balancer (required for rate limiting)
+app.set("trust proxy", 1);
+
 app.use(
   cors({
     origin: process.env.NODE_ENV === "production" 
