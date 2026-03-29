@@ -32,7 +32,7 @@ app.get("*", (req, res) => {
   if (req.path.startsWith("/api")) {
     return res.status(404).json({ message: "API route not found" });
   }
-  res.sendFile(path.resolve(frontendPath, "index.html"));
+  return res.sendFile(path.resolve(frontendPath, "index.html"));
 });
 
 // Global error handler
@@ -43,7 +43,5 @@ app.use((err: any, req: any, res: any, next: any) => {
     error: process.env.NODE_ENV === "development" ? err.message : undefined 
   });
 });
-
-export default app;
 
 export default app;
