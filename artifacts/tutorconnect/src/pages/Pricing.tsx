@@ -104,6 +104,7 @@ export default function Pricing() {
       name: "Pay Per Post",
       price: "49",
       description: "Perfect for a single requirement",
+      role: "tutor",
       features: [
         "One-time contact unlock",
         "Lifetime access to that post",
@@ -118,6 +119,7 @@ export default function Pricing() {
       name: "Weekly Unlimited",
       price: "399",
       description: "Intensive search for 7 days",
+      role: "tutor",
       features: [
         "Unlimited contact unlocks",
         "7 days total access",
@@ -132,6 +134,7 @@ export default function Pricing() {
       name: "Monthly Unlimited",
       price: "999",
       description: "Complete platform access",
+      role: "tutor",
       features: [
         "Unlimited contact unlocks",
         "30 days total access",
@@ -151,6 +154,7 @@ export default function Pricing() {
       name: "Premium Parent",
       price: "99",
       description: "For active hiring parents",
+      role: "parent",
       features: [
         "Up to 5 active requirements",
         "30 days total access",
@@ -164,21 +168,30 @@ export default function Pricing() {
     }
   ];
 
-  const currentPlans = (!user || user.role === "tutor") ? tutorPlans : parentPlans;
+  const tutorPlansWithRole = tutorPlans.map(p => ({ ...p, role: "tutor" }));
+  const parentPlansWithRole = parentPlans.map(p => ({ ...p, role: "parent" }));
+
+  const currentPlans = !user 
+    ? [...tutorPlansWithRole, ...parentPlansWithRole] 
+    : (user.role === "tutor" ? tutorPlansWithRole : parentPlansWithRole);
 
   return (
     <div className="py-12 md:py-24 bg-slate-50 min-h-[calc(100vh-64px)]">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-16 space-y-4">
           <h1 className="text-4xl md:text-5xl font-display font-bold text-slate-900 tracking-tight">
-            {user?.role === "parent" ? (
+            {!user ? (
+              <>Transparent Pricing for <span className="text-violet-600">Every Need</span></>
+            ) : user.role === "parent" ? (
               <>Find the Perfect <span className="text-violet-600">Home Tutor</span></>
             ) : (
               <>Elevate Your <span className="text-violet-600">Teaching Career</span></>
             )}
           </h1>
           <p className="text-lg text-slate-600 font-medium">
-            {user?.role === "parent" ? (
+            {!user ? (
+              "Whether you are a tutor looking to grow or a parent finding the best education, we have a plan for you."
+            ) : user.role === "parent" ? (
               "Post your requirements and match with the best qualified tutors in your area."
             ) : (
               "Unlock student contact details instantly. Choose the plan that fits your growth."
@@ -186,7 +199,7 @@ export default function Pricing() {
           </p>
         </div>
 
-        <div className={`grid grid-cols-1 gap-8 max-w-6xl mx-auto ${currentPlans.length > 1 ? "md:grid-cols-3" : "md:grid-cols-1 max-w-md"}`}>
+        <div className={`grid grid-cols-1 gap-8 max-w-7xl mx-auto ${currentPlans.length > 3 ? "md:grid-cols-2 lg:grid-cols-4" : currentPlans.length > 1 ? "md:grid-cols-3" : "md:grid-cols-1 max-w-md"}`}>
           {currentPlans.map((plan) => (
             <Card 
               key={plan.id} 
@@ -199,9 +212,14 @@ export default function Pricing() {
                   {plan.badge}
                 </div>
               )}
-              
-              <CardHeader className={`${plan.popular ? "pt-12" : "pt-8"} pb-8 px-8`}>
-                <CardTitle className="text-2xl font-bold text-slate-900">{plan.name}</CardTitle>
+
+              <CardHeader className={`${plan.popular ? "pt-12" : "pt-8"} pb-8 px-8 relative`}>
+                {!user && (
+                  <Badge className={`absolute top-4 left-6 ${plan.role === "tutor" ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-100" : "bg-violet-100 text-violet-700 hover:bg-violet-100"}`}>
+                    {plan.role === "tutor" ? "For Tutors" : "For Parents"}
+                  </Badge>
+                )}
+                <CardTitle className={`text-2xl font-bold text-slate-900 ${!user ? "mt-4" : ""}`}>{plan.name}</CardTitle>
                 <CardDescription className="text-slate-500 font-medium">{plan.description}</CardDescription>
                 <div className="mt-6 flex items-baseline gap-1">
                   <span className="text-4xl font-display font-bold text-slate-900">₹{plan.price}</span>
