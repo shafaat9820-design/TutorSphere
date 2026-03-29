@@ -37,8 +37,8 @@ console.log(`[Server] Static files root: ${frontendPath}`);
 app.use(express.static(frontendPath));
 
 // Serve index.html for any other request (SPA routing)
-// Express 5 / path-to-regexp 8 requires a named parameter or regex for catch-all
-app.get("(.*)", (req, res) => {
+// Express 5 / path-to-regexp 8 requires a named parameter for wildcards
+app.get("*path", (req, res) => {
   const indexPath = path.resolve(frontendPath, "index.html");
   
   res.sendFile(indexPath, (err) => {
