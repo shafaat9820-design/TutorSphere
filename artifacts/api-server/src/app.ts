@@ -25,14 +25,20 @@ app.use("/api", (req, res) => {
 });
 
 // Determine the path to the frontend build directory
-const frontendPath = path.resolve(process.cwd(), "artifacts/tutorconnect/dist/public");
+// In local dev, CWD is artifacts/api-server. In production (Render), CWD is the project root.
+const isProduction = process.env.NODE_ENV === "production";
+const frontendPath = isProduction
+  ? path.resolve(process.cwd(), "artifacts/tutorconnect/dist/public")
+  : path.resolve(process.cwd(), "../tutorconnect/dist/public");
+
 console.log(`[Server] Static files root: ${frontendPath}`);
 
 // Serve static files from the frontend build directory
 app.use(express.static(frontendPath));
 
 // Serve index.html for any other request (SPA routing)
-app.get("*", (req, res) => {
+// Express 5 / path-to-regexp 8 requires a named parameter or regex for catch-all
+app.get("(.*)", (req, res) => {
   const indexPath = path.resolve(frontendPath, "index.html");
   
   res.sendFile(indexPath, (err) => {
