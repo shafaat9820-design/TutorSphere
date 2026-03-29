@@ -4,9 +4,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import router from "./routes";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 const app: Express = express();
 
 app.use(
@@ -23,8 +20,9 @@ app.use(express.urlencoded({ extended: true }));
 // API routes first
 app.use("/api", router);
 
-// Serve static files from the frontend build directory
-const frontendPath = path.resolve(__dirname, "../../tutorconnect/dist");
+// Determine the path to the frontend build directory
+const frontendPath = path.resolve(process.cwd(), "artifacts/tutorconnect/dist");
+console.log(`[Server] Serving frontend from: ${frontendPath}`);
 app.use(express.static(frontendPath));
 
 // Serve index.html for any other request (SPA routing)
