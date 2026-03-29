@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api", router);
 
 // Determine the path to the frontend build directory
-const frontendPath = path.resolve(process.cwd(), "artifacts/tutorconnect/dist");
+const frontendPath = path.resolve(process.cwd(), "artifacts/tutorconnect/dist/public");
 console.log(`[Server] Serving frontend from: ${frontendPath}`);
 app.use(express.static(frontendPath));
 
