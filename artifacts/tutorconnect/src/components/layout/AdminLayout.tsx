@@ -108,7 +108,9 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
           >
             <Menu className="w-6 h-6" />
           </button>
-          <img src="/logo.png" alt="TutorSphere" className="h-8 w-auto brightness-0 invert" />
+          <div className="font-display font-bold text-lg text-white tracking-tight flex items-center gap-2">
+            <LayoutDashboard className="w-5 h-5 text-violet-500" /> Console
+          </div>
           <div className="w-10" /> {/* Spacer */}
         </header>
 
@@ -173,6 +175,25 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
               </Link>
             ))}
           </nav>
+          
+          <div className="mt-8 space-y-2 border-t border-slate-800/60 pt-6 pb-4">
+            <Link href="/">
+              <a 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-violet-400 hover:bg-violet-500/10 transition-colors"
+              >
+                <ChevronLeft className="w-5 h-5" />
+                Back to Website
+              </a>
+            </Link>
+            <button 
+              onClick={() => { logout(); setIsMobileMenuOpen(false); }}
+              className="flex w-full items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-red-400 hover:bg-red-500/10 transition-colors"
+            >
+              <LogOut className="w-5 h-5" />
+              Logout
+            </button>
+          </div>
         </div>
       </aside>
     </div>
