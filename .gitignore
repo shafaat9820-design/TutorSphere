@@ -51,3 +51,7 @@ Thumbs.db
 # Environment
 .env
 .env.*
+
+# Migration scripts
+lib/db/scripts/manual-migration*
+scripts/manual-migration*
