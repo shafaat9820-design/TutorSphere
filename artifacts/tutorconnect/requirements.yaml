@@ -1,0 +1,24 @@
+packages:
+  "framer-motion": "For page transitions, smooth list staggering, and polished micro-interactions."
+  "recharts": "Required for admin analytics dashboard charts (revenue, users, subjects)."
+  "date-fns": "For formatting timestamps from the API into human-readable dates."
+  "react-hook-form": "For robust form state management."
+  "@hookform/resolvers": "To integrate Zod validation with react-hook-form."
+  "zod": "For defining frontend form validation schemas that match API expectations."
+
+images:
+  - path: "artifacts/tutorconnect/public/images/hero-bg.png"
+    description: "A bright, warm, and inviting abstract background representing education, learning, and growth. Soft gradients of indigo, teal, and amber. Very professional, clean, and inspiring."
+    aspect_ratio: "16:9"
+  - path: "artifacts/tutorconnect/public/images/tutor-illustration.png"
+    description: "A high-quality 3D illustration of a friendly tutor helping a student online via a laptop. Clean, modern startup illustration style, similar to Stripe or Linear. Blue and warm orange accents."
+    aspect_ratio: "1:1"
+  - path: "artifacts/tutorconnect/public/images/pattern-dots.png"
+    description: "A subtle, semi-transparent geometric dot pattern background in light indigo color. Useful for adding texture to solid color sections."
+    aspect_ratio: "16:9"
+
+notes:
+  - "The workspace provides generated TanStack Query hooks via `@workspace/api-client-react`. I will use these directly."
+  - "Authentication uses a JWT stored in localStorage as `tutorconnect_token`."
+  - "Since I cannot modify the underlying `customFetch` in the workspace to automatically attach the token, I will pass the Authorization header explicitly via the `request` option in the Orval hooks (e.g., `request: { headers: { Authorization: 'Bearer ...' } }`)."
+  - "Razorpay integration requires dynamically loading the checkout.js script."
